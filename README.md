@@ -1,171 +1,277 @@
 # ctf-skill
 
-## 목적
+`ctf-skill`은 승인된 교육용 CTF를 AI 에이전트와 함께 풀 때 쓰는 진행 규칙입니다.
 
-`ctf-skill`은 승인된 교육용 CTF에서 의사결정을 증거 기반으로 통제합니다. 제품 스킬 파일은 `skills/ctf-solving/SKILL.md`이고, 통제 범위는 대상 계약, 가설, 위임, 재현, 수용입니다.
+정답이나 공격 기법을 제공하지는 않습니다. 대신 에이전트가 다음과 같이 일하도록 만듭니다.
 
-## 의사결정 통제가 필요한 이유
+- 확인한 사실과 추측을 구분합니다.
+- 같은 시도를 이름만 바꿔 반복하지 않습니다.
+- 로컬에서 통과한 결과를 실제 정답으로 착각하지 않습니다.
+- 막히거나 중단된 일을 성공이나 실패로 바꿔 적지 않습니다.
+- 마지막에는 공식 채점 결과로 결론을 냅니다.
 
-초기 추측이 검증 없이 사실로 굳거나, 로컬 결과를 실제 수용으로 착각하는 일을 막습니다. 같은 검증을 반복하는 것도 줄입니다. 그래서 주장마다 출처와 적용 범위를 남기고, 동시에 검증하는 가설 수를 제한합니다.
+실제로 배포하는 파일은 `skills/ctf-solving/SKILL.md` 하나입니다.
 
-## 적용 범주
+## 왜 필요한가
 
-여섯 범주로 라우팅합니다.
+에이전트가 CTF를 풀다 보면 흔히 이런 일이 생깁니다.
 
-- crypto
-- forensics
-- misc
-- pwn
-- reverse
-- web
+1. 처음 세운 추측이 확인 없이 사실처럼 굳습니다.
+2. 진짜 대상 대신 직접 만든 테스트 코드에서 성공하고는 문제를 풀었다고 믿습니다.
+3. 이미 효과가 없던 방법을 설정만 바꿔 다시 실행합니다.
+4. 중요한 단서를 얻고도 실제 채점까지 확인하지 않습니다.
+5. 중단, 환경 문제, 풀이 실패를 모두 같은 실패로 기록합니다.
 
-## 핵심 통제
+이 스킬은 이런 진행상의 실수를 줄이는 데 집중합니다. 더 많은 기법을 알려 주는 도구가 아니라, **어떤 근거로 무엇을 확인했고 다음에 왜 그 행동을 하는지**를 기록하게 하는 도구입니다.
 
-### 기존 작업 흐름과의 경계
+## 지원하는 문제 종류
 
-기존 작업 흐름이 오케스트레이션, 계획, 진행 상태, 지속 노트, 리뷰, 정리, 완료를 계속 소유합니다. CTF 정책은 `ctf_attempt`만 기록하고 이 소유 관계를 바꾸지 않습니다.
+문제 제목이 아니라 실제 파일과 실행 환경을 보고 다음 여섯 범주로 나눕니다.
 
-### 변경 개입 직렬화
+- `crypto`: 암호 알고리즘이나 그 구현의 약한 부분을 다루는 문제
+- `forensics`: 저장된 파일·패킷·메모리에서 흔적을 찾는 문제
+- `misc`: 다른 다섯 범주에 들어가지 않는 문제
+- `pwn`: 실행 중인 프로그램의 잘못된 동작을 이용하는 문제
+- `reverse`: 프로그램 내부 동작을 거꾸로 분석하는 문제
+- `web`: 웹 서비스의 동작과 요청 처리를 다루는 문제
 
-변경 개입은 아티팩트, 환경/세션/행위자, 공유 validator/계정/서비스/자원 경계 집합이 겹치면 직렬화합니다. 서로 겹치지 않는 수동 읽기·리뷰·격리 복제본은 병렬로 진행할 수 있습니다.
+## 먼저 알아 둘 용어
 
-### 일곱 필드 대상 계약
+문서에는 꼭 필요한 기술 용어만 남겼습니다.
 
-작업을 시작하기 전에 정확한 대상, 필수 아티팩트, 통제 가능한 입력, 관찰 가능한 중간 상태, 로컬 오라클, 실제 수용 표면, 예산 및 중단 조건의 일곱 필드를 고정합니다. 오라클이나 수용 표면을 증거로 도출할 수 있을 때는 이론을 넓히거나 `blocked`로 종료하기 전에 제한 발견 실험 하나를 선택합니다.
+- **로컬 판정 수단(local oracle)**: 내 환경에서 시도가 맞는지 빠르게 확인하는 방법입니다.
+- **실제 채점 창구(real acceptance surface)**: 대회 서버나 제출 화면처럼 최종 정답 여부를 결정하는 곳입니다.
+- **대체물(surrogate)**: 진짜 대상 대신 쓰는 테스트 코드, 복제본, 에뮬레이터, 패치한 프로그램 등을 뜻합니다.
+- **출처(provenance)**: 그 사실을 어디에서 확인했는지 나타내는 기록입니다.
+- **가설**: 아직 사실인지 확인하지 않은 설명입니다.
 
-### 출처가 명시된 역량 원장
+가장 중요한 원칙은 간단합니다.
 
-역량과 제약을 기록할 때 각 항목의 출처와 신뢰 범위를 함께 남깁니다. 확인되지 않은 추정은 확정된 사실과 분리합니다.
+> 대체물에서 성공한 것은 실제 정답이 아니다.
 
-### 활성 가설, 예비 후보 및 제한 개입
+## 어떻게 진행하는가
 
-조사 전에 출처가 있는 활성 가설군을 최대 세 개까지 둡니다. 증거가 세 개를 뒷받침하면 세 개를 쓰고, 그렇지 않으면 뒷받침되는 가설군과 그 사이에 남은 증거 공백을 기록합니다. 출처 없는 후보를 만들어 개수를 채우지 않습니다. 뒷받침된 가설군이 하나뿐이어도 시작할 수 있습니다. 각 활성 가설군에는 전제, 제한 개입 하나, 참/거짓 신호, 폐기 조건, 출처가 들어갑니다. 복합 가설은 하나의 예측을 갖는 하나의 슬롯으로 표현합니다. `tie, arbitrary pick`은 증거상 동등한 비승격 개입 후보에만 씁니다.
+### 1. 시작 전에 대상부터 정한다
 
-예비에는 출처가 있고 중복되지 않는 후보만 둡니다. 그 후보의 개입이 예산 안에 들어가고 판단이나 종료를 바꿀 수 있어야 합니다. 나머지는 개별 식별자와 전제 역할이 없는 `unfunded candidates` 미지수 하나로 묶습니다. 슬롯이 열리면 전제가 입증된 예비 하나를 승격합니다. 승격 순서는 종료를 바꿀 증거, 선언한 최악 비용당 판별력, 등록 순서를 따르고, 근거와 출처를 남깁니다.
+기법을 고르기 전에 다음 일곱 가지를 적습니다.
 
-불확정으로 끝났거나 감당 가능한 개입이 남지 않은 활성 후보는 예비로 내립니다. 같은 맥락의 직접 반증이 나오면 해당 후보를 폐기하고, 전제가 불가능해진 의존 후보도 함께 폐기합니다. 다시 여는 것은 전제가 입증된 후보에 한해 새 증거와 예산이 뒷받침할 때만 가능합니다. 감당 가능한 활성 제한 개입, validator 종료 작업, 예산이 배정된 예비 중 하나라도 남아 있을 때만 계속합니다.
+1. 정확히 무엇을 분석하는가
+2. 어떤 파일이 필요한가
+3. 무엇을 입력으로 바꿀 수 있는가
+4. 실행 중 무엇을 관찰할 수 있는가
+5. 로컬에서 맞고 틀림을 어떻게 확인하는가
+6. 실제 정답은 어디에서 판정되는가
+7. 시간과 실행 횟수를 어디까지 쓸 것인가
 
-다변수 결합 개입은 결합이 입증되었거나 각 구성 요소의 유효한 귀무 결과가 있고, 결합 예측을 미리 선언한 경우에만 제한 실험 한 번으로 허용합니다.
+이 중 1·5·6번, 즉 분석 대상과 로컬 판정 수단, 실제 채점 창구를 모르면 큰 탐색을 시작하지 않습니다. 먼저 작은 확인 작업으로 빈칸을 채웁니다.
 
-예산은 선언 단위·한도·사용량·잔여량만 기록합니다. 예산 대조는 예상 `budget-stop` 직전에만 합니다. `solved`, `interrupted`, `blocked` 뒤에는 재개를 위한 대조를 하지 않습니다. 개입 전에는 새로 준비할 필요 없이 이미 가능한 불변·무비용·무부작용 읽기를 선택적으로 최대 한 번 묶습니다.
+대상이나 채점 창구도 임의로 바꿀 수 없습니다. 원본 서비스에서 나온 직접 증거나 사용자·운영자가 준 새 정보가 있어야 합니다.
 
-### 모순 및 출처 확인
+### 2. 채점 조건을 다 안다고 가정하지 않는다
 
-관찰 결과가 기존 주장과 충돌하면 양쪽 증거의 출처와 적용 조건부터 확인합니다. 모순을 감추거나 근거 없이 어느 한쪽을 채택하지 않습니다.
+채점 서버의 위치를 안다고 해서 서버가 확인하는 조건을 모두 아는 것은 아닙니다.
 
-### 격리된 비중복 위임 및 독립 재현
+에이전트는 다음 내용을 계속 기록합니다.
 
-위임에는 불변 격리 입력과 비중복 범위를 쓰고, 공유 상태는 바꾸지 않습니다. 독립 재현은 입력과 관찰 출처가 서로 독립일 때만 허용하고, 그 결과를 계약과 원장에 연결합니다.
+- 지금까지 찾은 조건
+- 마지막으로 확인한 판단 지점
+- 아직 확인하지 못한 다음 판단
+- 각 내용의 출처
 
-활성 가설군은 동시 실행 작업이 아니라 후보 모델입니다. 독립 재현은 예산을 하나로 묶은 카드 한 장의 상태 갱신 한 번으로 처리합니다.
+확인 수준은 세 단계입니다.
 
-### 로컬 재현 후 실제 수용
+- `unknown`: 아직 충분히 모릅니다.
+- `frontier-complete`: 확인을 멈춘 지점을 명시했고, 거기까지는 검증했습니다.
+- `authoritative-complete`: 실제 채점 경로를 처음부터 끝까지 실행했고, 도달 가능한 판단을 모두 설명할 수 있습니다.
 
-결과를 깨끗한 로컬 상태에서 재현한 뒤 실제 대회 수용 여부를 확인합니다. 로컬 재현만으로 최종 성공을 선언하지 않습니다.
+마지막 단계가 되기 전에는 “다음에 확인할 것”을 적어도 하나 남깁니다. 그 확인 작업을 예산 안에서 할 수 있다면, 후보를 대량으로 훑기 전에 확인부터 합니다.
 
-## 결과와 종료 상태
+### 3. 대체물은 확인한 범위까지만 믿는다
 
-모든 작업은 `result` 하나와 `termination` 하나를 함께 기록합니다.
+대체물을 쓸 때는 다음 정보를 적어서 고정해 둡니다.
 
-- 결과 축: `solved`, `failed-with-valid-oracle`, `partial`, `no-result`
-- 종료 축: `completed`, `blocked`, `interrupted`, `budget-stop`
+- 파일 내용
+- 설정
+- 도구와 실행 환경의 버전
+- 원본과 같은 결과가 나온 입력과 지점
+- 처음으로 달라진 지점
 
-허용 조합은 `solved`+`completed`, `failed-with-valid-oracle`+`completed`, `failed-with-valid-oracle`+`budget-stop`이며, `partial`과 `no-result`는 모든 종료와 조합할 수 있습니다. 종료 사건 뒤 조합은 고정됩니다.
+파일이나 설정, 도구, 실행 환경이 바뀌면 새 대체물로 취급합니다. 예전 확인 결과를 그대로 물려받지 않습니다.
 
-`solved`에는 깨끗한 로컬 메커니즘과 실제 validator 수용이, `failed-with-valid-oracle`에는 유효한 오라클과 제한된 거부 관찰, 선언한 예산·중단 조건이 필요합니다. `partial`에는 유용하게 입증된 사실과 실제 수용이 없었다는 사실을, `no-result`에는 유용한 사실을 입증하지 못한 정확한 이유를 남깁니다.
+원본과 비교하지 않은 범위에서 나온 결과로 후보를 버리거나, 가설을 닫거나, 진행 기록을 바꿀 수 없습니다. 이때는 “아직 확인하지 못한 차이”로만 남깁니다.
 
-종료 축별 기록:
+### 4. 첫 번째 후보를 곧바로 정답으로 정하지 않는다
 
-- `blocked`: 사용할 수 없는 경계, 필요한 증명, 해제 조건, validator 부재 이유
-- `interrupted`: 외부 사건, 마지막으로 입증된 상태, validator `not-run` 이유
-- `budget-stop`: 선언한 한도와 validator 상태
-- `completed`: 종료 동작과 정리 결과
+한 조건을 만족하는 후보가 여러 개일 수 있습니다. “후보가 하나뿐인가”에 대한 판정은 세 가지입니다.
 
-모든 종료 기록에는 결과, 종료, 아티팩트/환경 식별자(가능하면 해시), 종료 사건, validator 응답, 종료 처리(closure)가 들어갑니다.
+- `proven`: 후보가 하나뿐이라는 근거가 있습니다.
+- `disproven`: 서로 다른 후보가 둘 이상 실제로 나왔습니다.
+- `unknown`: 어느 쪽도 증명하지 못했습니다.
 
-## 증거 보존과 판단 상태 정규화
+후보가 여러 개일 수 있다면 후보 묶음을 보존하고, 다음 조건으로 구분한 뒤 최종 후보를 고릅니다. 예산 안에서 확인할 수 있는 후보가 남아 있으면 일을 끝냈다고 선언하지 않습니다.
 
-컨텍스트를 줄이기 전에 판단 증거를 지속 기록(receipt/reference)으로 옮깁니다. 옮기기 전에 유일한 필수 증거를 삭제하면 안 됩니다. 임시 디버깅 아티팩트는 영구 보존 대상이 아니고, 필요 없어지면 제거합니다. 판단 상태 정규화는 세션 축약이 아니라서 주변 지속 상태를 바꾸지 않고, 진행 중(in-flight) 개입의 식별자와 기록을 보존해 중복 변경을 막습니다. 세션 축약 뒤에는 적용할 제어와 지속 상태를 다시 읽습니다.
+### 5. 가설은 적게, 실험은 한 번에 하나만 한다
 
-## 2026-07-29 개정 검증
+동시에 다루는 가설은 최대 세 개입니다. 근거가 하나뿐이면 하나만 시작해도 됩니다. 숫자를 채우려고 근거 없는 가설을 만들지 않습니다.
 
-아티팩트 `7b42c1bebde777ac552510fb33014569d66c85c1bafd12429681b6c3fae56544`에서 구조적 제약과 planning-only, in-flight, cleanup-interruption, evidence-sparse 시나리오가 통과했습니다. 해결률, 성능, 일반화를 뒷받침하는 증거는 아닙니다.
+각 가설에는 다음 내용이 필요합니다.
 
-## 디렉터리 구조
+- 왜 가능하다고 보는가
+- 한 번에 무엇만 바꿀 것인가
+- 맞다면 무엇이 보여야 하는가
+- 틀리다면 무엇이 보여야 하는가
+- 언제 버릴 것인가
 
-```text
-ctf-skill/
-├── README.md
-└── skills/
-    └── ctf-solving/
-        └── SKILL.md
-```
+같은 파일을 다시 받거나, 인코딩·라이브러리·작업자 수만 바꾸는 것은 새 전략이 아닙니다. 같은 전략에서 두 번 연속으로 판단에 도움이 되는 정보가 나오지 않으면 다른 접근으로 바꾸거나 멈춥니다.
 
-배포 파일은 `README.md`와 제품 스킬 파일뿐입니다.
+### 6. 예산을 유리하게 바꾸지 않는다
 
-## 가져오기 및 설치 예시
+첫 실행 전에 예산의 단위, 포함할 비용, 초기 한도를 정합니다. 이 값은 사용자가 정해 주거나, 상위 작업에서 내려오거나, 실제 외부 제약에서 옵니다.
 
-저장소를 `<repository-url>`에서 `ctf-skill`로 clone한 뒤, `skills/ctf-solving/SKILL.md`를 `<agent-skill-directory>/ctf-solving/SKILL.md`로 복사하거나 에이전트가 그 경로를 직접 로드하도록 설정합니다. 정확한 배치 위치는 사용하는 에이전트의 문서를 따릅니다.
+시간이 오래 걸리는 로컬 계산을 예산에서 빼거나, 실행하지 않은 비용을 이미 사용한 것처럼 기록할 수 없습니다. 비용 추정이 여러 개라면 현재 확인된 값 가운데 가장 낮은 값을 기준으로 실행 가능 여부를 판단합니다.
 
-## 승인된 안전 사용 예시
+### 7. 모순을 지우지 않는다
 
-다음 YAML은 운영 기법이 아니라 상태를 기록하는 예시입니다.
+두 관찰이 함께 참일 수 없다면 모순입니다. 원본끼리든, 원본과 대체물 사이든, 대체물끼리든 어느 쪽에서 결과가 갈리면 모두 모순으로 봅니다.
+
+“환경이 달라서 그럴 것”이라는 말은 설명 후보일 뿐입니다. 같은 조건에서 확인한 증거가 나오기 전까지 모순은 남겨 둡니다.
+
+로컬에서는 통과했지만 실제 채점에서 거절되면 다음 순서로 처리합니다.
+
+1. 로컬 모델의 확인 상태를 `unknown`으로 되돌립니다.
+2. 그 모델을 더 다듬는 작업을 멈춥니다.
+3. 대상과 채점 창구는 그대로 둡니다. 거절당했다고 더 쉬운 대상으로 갈아타지 않습니다.
+4. 빠뜨린 조건, 파일·환경 차이, 입력 형식, 중간에 버렸던 후보가 있는지 확인합니다.
+
+### 8. 마지막에는 실제 채점을 확인한다
+
+깨끗한 상태에서 로컬 재현을 한 뒤 실제 채점 창구를 사용합니다. 로컬 성공만으로 `solved`라고 기록할 수 없습니다.
+
+## 결과 기록 규칙
+
+모든 시도는 “무엇을 얻었는가”와 “왜 멈췄는가”를 따로 기록합니다.
+
+### 성과
+
+- `solved`: 로컬 재현과 실제 채점 성공을 모두 확인했습니다.
+- `failed-with-valid-oracle`: 로컬 판정 수단은 있었지만 정답을 얻지 못했습니다.
+- `partial`: 쓸모 있는 사실은 확인했지만 정답은 아닙니다.
+- `no-result`: 확인된 성과가 없습니다.
+
+### 종료 이유
+
+- `completed`: 해야 할 일을 마쳤습니다.
+- `blocked`: 필요한 파일이나 서비스에 접근할 수 없습니다.
+- `interrupted`: 외부에서 작업이 중단됐습니다.
+- `budget-stop`: 정한 예산을 모두 썼습니다.
+
+실행 가능한 확인 작업이 남아 있으면 `completed`를 쓸 수 없습니다. 종료 결과는 한 번 기록하면 그대로 둡니다. 이후 뒷정리 단계에서 오류가 나도 고쳐 쓰지 않습니다.
+
+## 상태 기록 예시
+
+아래 예시는 아직 실제 분석을 시작하지 않은 상태입니다.
 
 ```yaml
 ctf_attempt:
-  target_contract:
+  target:
     exact_target: "artifact-sha256:example"
-    required_artifacts: ["local-session:example"]
-    controllable_input: "example-controlled-input"
-    observable_intermediate_state: "example-observable-state"
-    local_oracle: "example-local-oracle"
+    local_oracle: "example-local-check"
     real_acceptance_surface: "example-validator"
-    budget_and_stop_condition: "one bounded action or stop"
-  artifact_environment_identity: "artifact-sha256:example / local-session:example"
-  capabilities:
-    - id: "read-1"
-      provenance: "observed read from local-session:example"
-      capability: "read-only"
-  active_families:
-    - id: "family-1"
-      prerequisite: "evidence gap remains for the example target"
-      bounded_intervention: "single bounded read"
-      true_signal: "read confirms the target assumption"
-      false_signal: "read contradicts the target assumption"
-      retirement_condition: "target assumption becomes settled"
-      evidence_provenance: "observed read from local-session:example"
-  reserve_candidates: []
-  retired_families: []
-  unknowns:
-    - "evidence gap: a second provenance-backed distinguishing observation that would support an additional active family has not been observed yet"
-  optional_passive_observation_batch: null
-  exactly_one_next_bounded_intervention:
-    id: "family-1"
-    prerequisite: "evidence gap remains for the example target"
-    immutable_scoped_inputs:
-      ["artifact-sha256:example", "local-session:example"]
-    mutation: "single bounded read"
-    true_signal: "read confirms the target assumption"
-    false_signal: "read contradicts the target assumption"
-    stateful_resource_boundary_set: ["local-session:example"]
-  in_flight_bounded_intervention: null
+  acceptance_model:
+    completeness: "unknown"
+    next_discovery: "check whether another decision follows"
+  active_hypotheses:
+    - id: "hypothesis-1"
+      evidence: "observed fact from local-session:example"
+      next_test: "one bounded check"
   budget:
     unit: "actions"
     limit: 1
     used: 0
     remaining: 1
-  compact_experiment_evidence_references: []
   result: null
   termination: null
-  terminal_event: null
   validator_response: null
-  closure: null
 ```
 
-개입 전 상태로 유효한 예시입니다. 출처가 뒷받침된 가설군이 하나뿐이어도 되고, 없는 관찰을 만들어 넣지 않습니다. 다음 개입은 원자적으로 `in_flight_bounded_intervention`으로 옮기고, 종료 관련 필드 다섯 개는 아직 `null`입니다.
+전체 필드와 정확한 규칙은 `skills/ctf-solving/SKILL.md`에 있습니다.
 
-## 승인 범위와 제한
+## 설치
 
-승인된 교육용 CTF에만 사용하고, 운영자가 정한 대상, 시간, 계정 범위를 지킵니다. 승인되지 않은 시스템이나 실제 서비스는 제외합니다.
+1. 저장소를 내려받습니다.
+2. `skills/ctf-solving/SKILL.md`를 사용하는 에이전트의 스킬 디렉터리 아래 `ctf-solving/SKILL.md`로 복사합니다.
 
-정책은 판단과 보고만 통제하고, 과제별 정답이나 기술 절차는 제공하지 않습니다. 증거가 불완전하거나 검증할 수 없는 환경을 성공이나 실패로 과장하지 않고, 수용은 공식 판정으로 판단합니다. validator와 사용자 대면 확인 표면이 다르면 둘 다 확인합니다.
+복사 대신 에이전트가 저장소 파일을 직접 읽도록 설정해도 됩니다.
+
+스킬 디렉터리의 정확한 위치는 사용하는 에이전트 문서를 따르세요.
+
+## 검증 결과
+
+2026-08-01 개정판은 다음 검사를 통과했습니다.
+
+- 정책 동작 시나리오 52건: `PASS: 52 model-control cases`
+  - 필수 행동을 빠뜨리는 경우
+  - 금지된 행동을 고르는 경우
+  - 상태를 바꿔야 할 때 바꾸지 않는 경우
+  - 정책 용어만 나열해 검사를 넘기려는 경우
+- Ruff 코드 검사와 형식 검사
+- basedpyright 타입 검사: 오류 0, 경고 0
+- JSON 문법 검사와 `git diff --check`
+
+검증 대상 파일의 SHA-256:
+
+- 정책 (`skills/ctf-solving/SKILL.md`): `572a93a2bc6d66c50df5b3e2829278ed60fd8f047b1533f2e04d2681e2caf7b6`
+- 검사 설명 (`tests/ctf-solving-model-controls.md`): `9853d3ff82b90c9f976881377fb563bcc0810942368643ef20a192359d38fed4`
+- 실행기 (`tests/run_model_controls.py`): `d6369d34b7aef4d28c2add8352ff552514090133e800d42b3376807d39902bef`
+- typed grader (`tests/model_control_harness.py`): `8708b6d6da7a74718ec79bc2b98c728736e657496f6f6652fc3b2fc8aea9ce8c`
+- 검사 시나리오 (`tests/model-control-cases.json`): `d097a10661a529717f71e4b330ca796ba88433679e0a6a497fcf230a599a0550`
+- Claude Opus 응답 기록 (`tests/fixtures/opus5-model-control-responses.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
+
+이 검증은 규칙에 맞는 판단과 상태 변경이 나오는지를 확인합니다. 실제 CTF 해결률이나 풀이 속도를 보장하지는 않습니다.
+
+## 저장소 책임과 OmCTF 동기화
+
+이 저장소가 범용 CTF 풀이 정책과 model-control regression의 source of
+truth입니다. 가설, 반증, 후보 보존, surrogate 범위, budget, 모순, 결과
+판정처럼 OmCTF 없이도 의미가 있는 규칙은 여기에서 먼저 변경하고
+검증합니다.
+
+`oh-my-ctf`는 검증된 `SKILL.md`를 byte-identical snapshot으로
+패키징합니다. Senpi TUI 활성화, session lifecycle, tool 권한, evidence
+저장, sandbox, terminal authority는 skill 문장이 아니라 OmCTF runtime과
+그 integration test가 소유합니다.
+
+동기화 순서는 다음과 같습니다.
+
+1. 이 저장소에서 정책과 model-control case를 함께 수정합니다.
+2. self-test와 policy-bound model 응답 평가를 통과시킵니다.
+3. `SKILL.md`를 OmCTF package에 byte-identical하게 반영합니다.
+4. OmCTF의 provenance와 build-pinned hash를 갱신합니다.
+5. OmCTF package, activation, evidence, release test를 실행합니다.
+
+양쪽 `SKILL.md`를 독립적으로 편집하지 않습니다. OmCTF에만 필요한
+activation 규칙을 범용 skill에 추가하지 않고 runtime test로 검증합니다.
+
+## 파일 구성
+
+```text
+ctf-skill/
+├── README.md
+├── skills/
+│   └── ctf-solving/
+│       └── SKILL.md
+└── tests/
+    ├── __init__.py
+    ├── ctf-solving-model-controls.md
+    ├── fixtures/
+    │   └── opus5-model-control-responses.json
+    ├── model-control-cases.json
+    ├── model_control_harness.py
+    └── run_model_controls.py
+```
+
+## 사용 범위
+
+승인된 교육용 CTF에서만 사용합니다. 운영자가 정한 대상, 시간, 계정 범위를 지켜야 합니다.
+
+이 스킬은 판단과 보고 방식을 통제합니다. 문제별 정답이나 기술 절차를 제공하지 않습니다. 최종 성공 여부는 공식 채점 결과로만 판단합니다.

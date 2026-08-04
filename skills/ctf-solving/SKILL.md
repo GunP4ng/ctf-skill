@@ -5,154 +5,236 @@ description: "MUST USE for authorized CTF solving across crypto, forensics, misc
 
 # CTF Solving Policy
 
-Use this policy for authorized CTF work only. Route by observed artifact or runtime surface, not by challenge title.
+Use this policy only for an authorized CTF target. Route by observed artifact or
+runtime surface, not by challenge title.
 
 ## Control intent
 
-- Bound search by evidence and use the smallest decision-changing discriminator.
-- Require explicit target, oracle, and acceptance surface before techniques.
-- Preserve claim provenance.
-- Stop expanding search once no affordable intervention can change the decision; close on the validator when it is available, otherwise record the correct terminal pair.
-
-The surrounding workflow remains authoritative for orchestration, plans, progress tracking, durable notes, reviews, cleanup, and completion. This policy records only `ctf_attempt` and never mutates those controls.
-
-Before investigation, activate up to three provenance-backed hypothesis families, each with distinguishing evidence and one investigation assignment: activate three when the evidence supports three, otherwise activate every supported family and record the evidence gap that keeps the count lower, naming what observation would raise it. Never invent an unprovenanced family to reach a count; one supported family is a legal start. Extra formed candidates stay reserve and never count as active.
-
-For each mutation, declare its stateful-resource boundary set: artifact; environment/session/actor; and shared validator/account/service/resource. Intersecting sets serialize through recorded outcome and state update. Disjoint passive reads, reviews, and immutable isolated replicas may parallelize.
+- Keep reasoning and read-only exploration flexible; govern external actions,
+  durable state changes, and official claims.
+- Prefer the smallest affordable experiment that can change a decision.
+- Preserve actual bytes and observations before reducing them to summaries.
+- Separate local models and surrogate behavior from authoritative acceptance.
+- Treat policy bookkeeping as coordination, never as technical progress.
 
 ## 1) Target contract
 
-Before any technique, record these seven fields: (1) exact target, (2) required artifacts, (3) controllable input, (4) observable intermediate state, (5) local oracle, (6) real acceptance surface, (7) budget and stop condition.
+Before an intervention, record these eight fields: (1) exact target and
+authorized scope, (2) required artifacts, (3) controllable input, (4) observable
+intermediate state, (5) local oracle, (6) discovery surface, (7) real acceptance
+surface, and (8) budget and stop condition. The discovery surface names the
+artifact, runtime, instrumentation, reconstruction, emulation, static analysis,
+or bounded acquisition path on which facts can still be proven. Acceptance
+unavailability affects closure only; it does not erase a reachable discovery
+surface.
 
-If an unknown local oracle or an undocumented but reachable acceptance surface is evidence-derivable, choose one bounded discovery experiment before theorizing or blocking. One known-wrong submission may discriminate accept from reject. For a planning-only request, name that experiment without claiming to have run it and never invent its observation. An unexecuted observation keeps the attempt live with every terminal field null. If the planning request itself finishes while that observation is still pending, use `result: no-result` with the exact pending reason and the matching termination; use `partial` only when some other useful fact was actually proven.
+If a local oracle or reachable acceptance surface is unknown but
+evidence-derivable, choose one bounded discovery experiment before theorizing
+or blocking. A planning-only request may name the experiment but must not claim
+that it ran. An unexecuted observation keeps terminal fields null.
 
-Require enough artifact and target evidence to define the target contract. If the artifact or execution boundary is unavailable and non-derivable, use `termination: blocked`, with `result: partial` only when a useful fact was proven and `no-result` otherwise. Preserve the boundary, proof, unblock, and validator-unavailable evidence.
+Pin target and acceptance identities. Revisions are append-only: retain prior
+identities and require direct user, organizer, or authoritative target evidence
+for the replacement. A surrogate, guess, timeout, or local rejection cannot
+nominate a new target.
 
-## 2) Capability ledger
+Use `blocked` only when every decision-changing acquisition, reconstruction,
+rehosting, emulation, static-analysis, or acceptance action is unavailable or
+non-derivable. Record the boundary, proof, attempted or excluded action, unblock
+condition, and validator status.
 
-Maintain a capability ledger with provenance-qualified evidence only. Each entry is an observed, missing, or unknown capability and cites its proving artifact, runtime observation, parser output, service reply, or session state. Inference alone cannot promote capability.
+## 2) Local models, surrogates, and candidate sets
 
-## 3) Hypothesis control
+Create acceptance-model bookkeeping only when a local predicate or reconstructed
+decision affects prioritization, retirement, uniqueness, or closure. Record the
+known predicate, provenance, reached frontier, unresolved downstream decision,
+and completeness as `unknown`, `frontier-complete`, or
+`authoritative-complete`. Never infer completeness from missing evidence.
 
-Keep at most three actively tested families.
+A surrogate is any mock, emulator, replica, patch, lift, deobfuscation,
+reimplementation, or local substitute. Bind each fidelity claim to the
+authoritative target, surrogate artifact and configuration, relevant runtime
+and environment, matched inputs and observables, first material divergence, and
+claim scope. Multi-hop scope is the intersection of its lineage. A change
+invalidates only the fidelity facts it can affect; extend scope only through a
+new authoritative comparison. Local success never becomes authoritative
+acceptance.
 
-Each family must state its prerequisite, one bounded intervention, true signal, false signal, retirement condition, and evidence provenance.
+If a local predicate is not proven injective, preserve every known candidate or
+a lossless constraint/equivalence-class representation. Record uniqueness as
+`proven` only with a single-preimage or injectivity receipt, `disproven` when
+distinct candidates are observed, and `unknown` otherwise. Do not commit the
+first local solution as unique or enumerate a large symbolic set when its
+constraints can be preserved losslessly.
 
-Rules:
+## 3) Capability and hypothesis control
 
-- use mutual exclusivity only when supported by evidence
-- represent a compound hypothesis as one slot with one prediction
-- choose the cheapest separator across active families
-- use `tie, arbitrary pick` only for evidence-equivalent non-promotion interventions, then choose one without invented justification
-- keep reserve as a separate provenance-qualified set; do not make it a required per-family field
-- keep reserve candidates unretired until the declaring evidence resolves them
+Maintain a provenance-qualified capability ledger. Each capability is
+`observed`, `missing`, or `unknown` and cites its artifact, runtime observation,
+parser output, service reply, or session state. Inference alone cannot promote
+capability.
 
-Reserve admission and promotion:
+Keep at most three actively tested hypothesis families. Preserve every other
+supported family in reserve by identity or a provenance-backed grouped
+representation; never collapse decision-relevant candidates into an anonymous
+unknown.
 
-- admit only a unique provenance-backed candidate whose bounded intervention fits budget and can change the decision or closure; otherwise retain one aggregate `unfunded candidates` unknown without identity or prerequisite role
-- after initialization or an intervention update opens a slot, promote exactly one reserve with proven matching-context prerequisites and an executable bounded intervention
-- prioritize closure-changing evidence, discrimination per declared worst-case cost, then stable insertion order; record reason and provenance, never weighted scoring
-- bounded inconclusive work demotes the candidate, which stays ineligible until new evidence bears on it
-- matching-context direct refutation retires the candidate and any dependents whose prerequisites become impossible
-- new evidence that invalidates a retirement reopens only candidates currently supported by proven prerequisites, and only when budget permits
-- an active family without an affordable bounded intervention demotes to reserve as an evidence-driven update, opening its slot
-- continue while any affordable active bounded intervention, validator or acceptance closure action, or funded eligible reserve remains; terminalize only when none remains
+Each active family states its prerequisite, one bounded intervention, true
+signal, false signal, retirement condition, evidence provenance, and the
+prerequisite coverage required for a valid falsifier.
 
-Budget: record unit, limit, used, and remaining, and never invent scheduler state; reconcile only immediately before a prospective `budget-stop`, never to resume after `solved`, `interrupted`, or `blocked`.
+- choose the cheapest separator across active families;
+- use mutual exclusivity only when evidence proves it;
+- represent a compound hypothesis as one slot with one prediction;
+- promote one funded reserve when a slot opens, preferring closure-changing
+  evidence, discrimination per proven cost, then stable insertion order;
+- demote after bounded inconclusive work only as a prioritization change and
+  preserve the family for later evidence;
+- leave eligibility unchanged when an intervention lacks prerequisite coverage
+  or produces the same signal in both prerequisite states;
+- retire only when a falsifier-coverage receipt proves the prerequisite was
+  tested in matching context and the observed signal distinguishes its states;
+- retire dependents only when the covered refutation makes their prerequisites
+  impossible; and
+- reopen a retirement when new evidence invalidates it.
+
+Record budget unit, limit, used, remaining, and provenance for every
+budget-consuming action. An action is proven affordable only when a credible
+upper bound fits; it is proven unaffordable only when a credible lower bound
+exceeds the remainder. Otherwise cost is unknown and needs a bounded audit.
+Reconcile after budget-consuming actions and before any terminal affordability
+decision. Never alter accounting merely to justify continuation or stopping.
 
 ## 4) Contradiction handling
 
-Before treating a contradiction as fatal, compare source, artifact hash, environment, session, freshness, and parser/tool version. If any of these differ, treat the contradiction as a possible context mismatch first. Do not invalidate a whole plan from an unqualified contradiction.
+Preserve contradictions explicitly and scope each one to the claim it affects.
+Before treating one as fatal, compare source, artifact hash, environment,
+session, freshness, and parser/tool version. A context mismatch explains scope;
+it does not erase the observation.
 
-## 5) Delegation
+Rejection can contradict an acceptance prediction. Error, timeout, ambiguity,
+or unavailability instead creates an acceptance unknown unless it proves a
+semantic result. Only a decision-relevant unresolved contradiction blocks that
+claim. Authoritative acceptance outranks a surrogate prediction for acceptance,
+while unrelated contradictions remain recorded.
 
-Delegate only disjoint work with immutable isolated inputs. The surrounding workflow owns execution and delegation; this policy defines only what a delegated lane may contain.
+## 5) Delegation and side effects
 
-Rules:
+Give workers immutable, disjoint scopes: question, artifact, allowed tools,
+budget, output schema, and stop condition. The parent owns hypothesis
+promotion, canonical state changes, and closure. Worker prose is evidence input,
+not authority.
 
-- non-overlapping lanes only: reject duplicate scope and merge duplicate candidate paths
-- parent exclusively owns overlap registry, candidate promotion, and closure
-- each worker receives immutable, isolated state only and may not mutate shared solver state
-- explicit independent replication is allowed only when the replication inputs are isolated and the observation is independently sourced. Represent it as one bounded replication intervention card with one aggregate budget, and resolve or cancel every member before recording its single state update
+Serialize interventions whose stateful-resource boundaries intersect. Disjoint
+bounded reads or experiments may run concurrently when their outputs and
+mutation rights remain isolated.
 
-A handoff must contain only proven facts, active families, retired families, reserve candidates, unknowns, and exactly one bounded next intervention card with its prerequisite, immutable scoped inputs, one mutation, and expected true and false signals. Keep reserve candidates unproven and separate; never promote an unproven assumption through the intervention card.
+Treat submissions, destructive changes, account lockout risk, one-shot
+services, credentials, and rate limits as explicit side-effect boundaries.
+Record permission and cost before crossing one. Any trusted stop request pauses
+new mutations and triggers bounded cancellation.
 
 ## 6) Execution loop
 
 Use this loop:
 
-- pin: preserve originals and record hashes
-- read: optionally perform at most one cost-free immutable side-effect-free read batch before an intervention, limited to reads already available without new setup
-- model: keep the active hypothesis set small
-- discriminate: run exactly one bounded next intervention and record raw output
-- close: replay cleanly, then validate on the real acceptance surface
+1. **Pin** — preserve originals and record identities or hashes.
+2. **Read** — batch bounded side-effect-free observations while their cost and
+   output remain controlled.
+3. **Model** — keep active families small and preserve reserve identities.
+4. **Discriminate** — run one bounded decision-changing intervention.
+5. **Settle** — retain raw output, record the actual outcome, then update state.
+6. **Close** — replay when feasible and use the real acceptance surface.
 
-Active families are models, not concurrent jobs. Serialize intervention cards whose declared stateful-resource boundary sets intersect. Finish a card's true, false, inconclusive, or bounded-cancel outcome before its update, terminal decision, or next card. Replica members form one update before terminalization.
+Before an intervention, declare its expected discriminator, bounded cost,
+stateful-resource boundary, display ceiling, and durable raw-output destination.
+Do not overwrite the sole copy of required evidence. Context keeps only bounded
+output plus its reference, provenance, discriminator result, and state change.
+Never invent or silently normalize unobserved output.
 
-Before any context reduction, transfer raw output into an immutable external artifact, then retain in context only its hash/reference plus provenance, discriminator result, and resulting state change. Never reduce, overwrite, or delete the sole copy of required raw evidence before that transfer completes, and never fabricate output that was not observed. Temporary raw debugging artifacts that are not sole required evidence need not be permanent and must be removed when no longer required.
+Atomically mark a mutation in flight before execution and settle it once from a
+durable outcome receipt. Interruption, compaction, or recovery must not execute
+or record the mutation twice.
 
-Decision-state projection/canonicalization rewrites only `ctf_attempt`; it is not session compaction and never mutates surrounding durable state. After session compaction, reread applicable controls and durable state. Projection preserves in-flight identity and its durable outcome receipt so interruption or projection cannot execute or record a mutation twice.
+Track consecutive no-information outcomes by semantic fingerprint: modeled
+state, decomposition, relevant unknowns, and observable predicate. After two,
+require new evidence, a material representation pivot, or a frontier audit
+before a third equivalent intervention or terminal transition. Changing only
+tool, engine, prompt, parameter, or implementation does not reset the count.
 
-A verified useful primitive immediately schedules a clean local replay, then real acceptance. New research waits until that closes or fails. Multi-variable interaction testing starts only after proven coupling or valid constituent nulls, with a predeclared combined prediction. Passive observation batching is optional; a loop may proceed without one.
+Before a non-`solved` terminal transition, record one compact frontier audit.
+For discovery, representation pivot, active/reserve discrimination, and
+acceptance closure, name the cheapest supported action or `none`, its
+prerequisites, cost evidence, expected decision change, and reconciled budget.
+`none` must cover the current artifact and every supported candidate. Any
+affordable decision-changing action keeps the attempt live.
 
 ## 7) Results and terminations
 
-Use exactly one `result` and exactly one `termination`.
+Use one result and one termination.
 
-Results: `solved`, `failed-with-valid-oracle`, `partial`, or `no-result`.
+- Results: `solved`, `failed-with-valid-oracle`, `partial`, or `no-result`.
+- Terminations: `completed`, `blocked`, `interrupted`, or `budget-stop`.
+- Legal pairs: `solved` only with `completed`;
+  `failed-with-valid-oracle` with `completed` or `budget-stop`; `partial` or
+  `no-result` with any termination.
 
-Terminations: `completed`, `blocked`, `interrupted`, or `budget-stop`.
+While live, result, termination, terminal event, validator response, and closure
+remain null. One atomic transition populates and freezes them before cleanup.
 
-Legal pairs: `solved` only with `completed`; `failed-with-valid-oracle` only with `completed` or `budget-stop`; `partial` with any termination; `no-result` with any termination.
+- `solved` requires authoritative acceptance and a clean replayable mechanism
+  when feasible; for a one-shot or non-rehostable surface, retain the exact
+  pinned invocation and acceptance receipt instead.
+- `failed-with-valid-oracle` requires a valid oracle and bounded rejection
+  evidence covering every remaining candidate.
+- `partial` requires a useful proven fact plus explicit absence of acceptance.
+- `no-result` records why no useful fact was proven.
 
-Store these only in `ctf_attempt`. While live, `result`, `termination`, `terminal_event`, `validator_response`, and `closure` are null. One terminal transition populates all five exactly once, at the validator or attempt outcome and before any surrounding cleanup, and freezes them; projection, cleanup interruption, or any later event can neither duplicate nor rewrite them.
-
-- `solved`: clean local mechanism plus real validator/flag acceptance response.
-- `failed-with-valid-oracle`: valid oracle identity plus bounded rejection observations and budget/stop terminal event; never claim plausible failure without a valid oracle.
-- `partial`: useful fact/primitive/local proxy evidence plus explicit absence of real acceptance; local-only remains partial.
-- `no-result`: exact reason no useful fact was proven, including a planning-only request whose observation was never executed.
-
-Every terminal record names result, termination, artifact/environment identity (hashes where available), terminal event, validator response, and closure. Name the same validator consistently across records. If it is unavailable, record `not-run` or `unavailable` with the exact reason.
-
-For `blocked`: unavailable boundary, required proof, unblock condition, validator reason; `interrupted`: external event, last proven state, `not-run` reason; `budget-stop`: limit and validator status; `completed`: terminal action and current cleanup status.
-
-Because the pair freezes first, an accepted validation whose cleanup is later interrupted stays `solved` + `completed` with cleanup status recorded as incomplete and its interrupting event named; the frozen `ctf_attempt` is not rewritten, and only the surrounding workflow stays unfinished until cleanup completes.
+Every terminal record names artifact/environment identity, terminal event,
+validator response, closure evidence, and for a non-solved result its frontier
+audit or genuine external-interruption exception. Acceptance remains solved if
+later cleanup is interrupted; record cleanup separately without rewriting the
+frozen attempt.
 
 ## 8) Domain routing
 
-Route by observed artifact or surface.
+- **Crypto** — algebra, entropy, nonce/key reuse, oracle behavior, then bounded
+  solving.
+- **Forensics** — preserve originals; inspect metadata, structure, carving, and
+  timeline before interpretation.
+- **Pwn** — establish mitigations, crash control, primitive, clean local replay,
+  then remote acceptance.
+- **Reverse engineering** — map input to decision or state transition; distinguish
+  static facts from runtime facts.
+- **Web** — map source, routing, auth, parser, and session boundaries; preserve
+  exact requests and responses.
+- **Misc** — infer the governing state machine from observed behavior and test
+  the smallest separator.
 
-- crypto: verify format/oracle; block on artifact/verifier; close with local verification and acceptance.
-- forensics: verify provenance/immutability; block on integrity; close with proven recovery and acceptance.
-- misc: classify structure; block on artifact/process; close with rule resolution and acceptance.
-- pwn: test runtime/process; block on runtime/service; close with end-to-end replay and acceptance.
-- reverse: model then observe state; block on runtime/parser; close with behavior match and acceptance.
-- web: map reset, actor, and data boundaries; block on service/endpoint; close with request replay and acceptance.
+Domain-specific missing tools block only when no acquisition, reconstruction,
+emulation, static-analysis, or authoritative path can derive the needed fact.
 
 ## 9) State form
 
-The canonical `ctf_attempt` contains only these fields:
+Maintain one compact canonical attempt containing target and authorization,
+artifact/environment identity, capabilities, active/reserve/retired families,
+unknowns, budget, evidence references, at most one next bounded intervention,
+nullable in-flight identity, and terminal fields.
 
-- target contract
-- artifact/environment identity
-- capabilities
-- active, reserve, and retired families
-- unknowns
-- optional passive observation batch
-- exactly one next bounded intervention
-- nullable `in_flight_bounded_intervention`
-- budget
-- compact experiment evidence references
-- result, termination, terminal event, validator response, and closure
-
-In-flight is distinct from next: atomically move next into it before mutation, then clear it only after recording the bounded outcome and durable receipt. It is null when no mutation runs. Next may be null live while choosing, while the named card it was moved into is in flight, or while terminalizing; both are null terminally. Terminal fields follow section 7.
+Acceptance-model, surrogate, candidate-set, fingerprint, revision, and
+contradiction records are optional and appear only when they affect a decision.
+Projection is non-authoritative and must preserve in-flight and durable receipt
+identity.
 
 ## 10) Completion
 
-Reuse a receipt only for one current-turn invocation of the exact user-facing surface on the exact current reviewed artifact/environment with the same acceptance criterion. It contains surface execution, validator/acceptance, and cleanup. If the challenge validator and the user-facing surface you are asked to demonstrate are different surfaces, exercise both; never reuse validator-only evidence as if it covered the user-facing surface. Reference the durable receipt from `ctf_attempt`.
+Reuse a receipt when it covers the exact artifact, environment, acceptance
+criterion, and user-facing surface and remains fresh for the relevant
+side-effect or rate-limit boundary. Do not force a harmful duplicate invocation
+merely because the receipt came from an earlier turn. If validator and requested
+demonstration are different surfaces, exercise both when safely possible.
 
-Record the attempt as finished only when the target contract is satisfied, the chosen result and termination carry their result- and termination-specific evidence semantics—every finished attempt, including `partial`, has the complete terminal record required by section 7—and decision evidence has a durable receipt/reference.
-
-The surrounding workflow declares overall finish only after cleanup completes and no extra workers or temp resources remain. A pending or interrupted cleanup blocks that declaration and never alters the frozen `ctf_attempt` record.
-
-Do not add reference links, external paths, or hidden companion docs. This file is the policy.
+Finish the attempt only when the target contract is satisfied, result and
+termination carry their required evidence, and decision evidence has a durable
+reference. Finish the surrounding workflow only after workers and temporary
+resources are cleaned up.
