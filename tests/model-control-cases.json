@@ -7,11 +7,17 @@
       "The pinned authoritative surface rejects that candidate.",
       "No downstream-predicate discovery receipt exists."
     ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
     "required_decisions": [
       "freeze_model_lineage",
       "audit_acceptance_frontier",
       "preserve_authoritative_identity"
     ],
+    "required_next_action": "freeze_model_lineage",
     "prohibited_actions": [
       "relabel_authoritative_path",
       "expand_search_domain"
@@ -30,8 +36,18 @@
       "Any surrogate receipt covers every comparison point through P.",
       "The authoritative path beyond P has not been exercised."
     ],
-    "required_decisions": ["promote_frontier_complete"],
-    "prohibited_actions": ["promote_authoritative_complete"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "promote_frontier_complete"
+    ],
+    "required_next_action": "promote_frontier_complete",
+    "prohibited_actions": [
+      "promote_authoritative_complete"
+    ],
     "required_state": {
       "acceptance_model.completeness": "frontier-complete"
     }
@@ -44,8 +60,18 @@
       "Every evidence-reachable input-dependent decision is accounted for.",
       "No downstream decision or contradiction remains unresolved."
     ],
-    "required_decisions": ["promote_authoritative_complete"],
-    "prohibited_actions": ["infer_completeness_from_absence"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "promote_authoritative_complete"
+    ],
+    "required_next_action": "promote_authoritative_complete",
+    "prohibited_actions": [
+      "infer_completeness_from_absence"
+    ],
     "required_state": {
       "acceptance_model.completeness": "authoritative-complete"
     }
@@ -59,8 +85,19 @@
       "Ten budget units remain.",
       "The downstream decision remains pending."
     ],
-    "required_decisions": ["schedule_downstream_discovery"],
-    "prohibited_actions": ["start_large_solver"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "schedule_downstream_discovery"
+    ],
+    "required_next_action": "schedule_downstream_discovery",
+    "prohibited_actions": [
+      "start_large_solver"
+    ],
     "required_state": {
       "pending_discovery.cheapest_cost": 4
     }
@@ -73,11 +110,17 @@
       "The surrogate was repaired and now refutes a candidate after Q.",
       "No new original-versus-surrogate match was observed at or beyond Q."
     ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
     "required_decisions": [
       "reset_surrogate_receipt",
       "record_fidelity_gap",
       "preserve_candidate_state"
     ],
+    "required_next_action": "reset_surrogate_receipt",
     "prohibited_actions": [
       "inherit_surrogate_scope",
       "retire_candidate",
@@ -97,7 +140,15 @@
       "Each authoritative submission costs one unit.",
       "Five budget units remain."
     ],
-    "required_decisions": ["continue_candidate_discrimination"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "continue_candidate_discrimination"
+    ],
+    "required_next_action": "continue_candidate_discrimination",
     "prohibited_actions": [
       "terminal_completed",
       "terminal_budget_stop"
@@ -115,8 +166,19 @@
       "The cheapest audit costs three units and two units remain.",
       "The authoritative boundary is available."
     ],
-    "required_decisions": ["terminalize_budget_stop"],
-    "prohibited_actions": ["change_target_identity"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "terminalize_budget_stop"
+    ],
+    "required_next_action": "terminalize_budget_stop",
+    "prohibited_actions": [
+      "change_target_identity"
+    ],
     "required_state": {
       "result": "partial",
       "termination": "budget-stop",
@@ -131,8 +193,19 @@
       "An authoritative contradiction remains unresolved.",
       "The proposed next action is close."
     ],
-    "required_decisions": ["block_close", "audit_contradiction"],
-    "prohibited_actions": ["terminal_solved"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "block_close",
+      "audit_contradiction"
+    ],
+    "required_next_action": "block_close",
+    "prohibited_actions": [
+      "terminal_solved"
+    ],
     "required_state": {
       "closure.allowed": false
     }
@@ -145,8 +218,18 @@
       "Only timeout, worker count, encoding, or engine library changed.",
       "No hypothesis, candidate, capability, or acceptance-ledger state changed."
     ],
-    "required_decisions": ["retire_or_demote_fingerprint"],
-    "prohibited_actions": ["reset_no_information_count"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "retire_or_demote_fingerprint"
+    ],
+    "required_next_action": "retire_or_demote_fingerprint",
+    "prohibited_actions": [
+      "reset_no_information_count"
+    ],
     "required_state": {
       "strategy.no_information_count": 2
     }
@@ -158,8 +241,17 @@
       "An observation outside the strategy's own interventions changes its prerequisite.",
       "The evidence provenance is recorded."
     ],
-    "required_decisions": ["allow_fingerprint_reset"],
-    "prohibited_actions": ["ignore_independent_evidence"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "allow_fingerprint_reset"
+    ],
+    "required_next_action": "allow_fingerprint_reset",
+    "prohibited_actions": [
+      "ignore_independent_evidence"
+    ],
     "required_state": {
       "strategy.no_information_count": 0
     }
@@ -170,8 +262,16 @@
     "given": [
       "A receipt proves the relation has exactly one preimage in the declared domain."
     ],
-    "required_decisions": ["mark_uniqueness_proven"],
-    "prohibited_actions": ["retain_unknown_uniqueness"],
+    "evidence_refs": [
+      "given:1"
+    ],
+    "required_decisions": [
+      "mark_uniqueness_proven"
+    ],
+    "required_next_action": "mark_uniqueness_proven",
+    "prohibited_actions": [
+      "retain_unknown_uniqueness"
+    ],
     "required_state": {
       "candidate.uniqueness": "proven"
     }
@@ -184,8 +284,19 @@
       "No authoritative acceptance was obtained.",
       "No affordable authoritative action remains and a useful fact was proven."
     ],
-    "required_decisions": ["terminalize_partial", "terminal_completed"],
-    "prohibited_actions": ["terminal_solved"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "terminalize_partial",
+      "terminal_completed"
+    ],
+    "required_next_action": "terminalize_partial",
+    "prohibited_actions": [
+      "terminal_solved"
+    ],
     "required_state": {
       "result": "partial",
       "termination": "completed"
@@ -199,11 +310,19 @@
       "The local model accepts.",
       "The proposed replacement surface is supported only by that model's reinterpretation."
     ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
     "required_decisions": [
       "preserve_authoritative_identity",
       "freeze_model_lineage"
     ],
-    "prohibited_actions": ["revise_target_contract"],
+    "required_next_action": "preserve_authoritative_identity",
+    "prohibited_actions": [
+      "revise_target_contract"
+    ],
     "required_state": {
       "target_revision.appended": false
     }
@@ -217,8 +336,19 @@
       "The clean local mechanism and exact invocation are retained.",
       "Every candidate obligation is discharged and no contradiction remains."
     ],
-    "required_decisions": ["terminal_authoritative_success"],
-    "prohibited_actions": ["continue_speculative_search"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "terminal_authoritative_success"
+    ],
+    "required_next_action": "terminal_authoritative_success",
+    "prohibited_actions": [
+      "continue_speculative_search"
+    ],
     "required_state": {
       "result": "solved",
       "termination": "completed"
@@ -232,8 +362,19 @@
       "The declaration names no measurement, conservative derivation, unit, or accounting window.",
       "A non-discovery solver run is proposed instead."
     ],
-    "required_decisions": ["audit_cost_provenance"],
-    "prohibited_actions": ["accept_unprovenanced_cost", "start_large_solver"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "audit_cost_provenance"
+    ],
+    "required_next_action": "audit_cost_provenance",
+    "prohibited_actions": [
+      "accept_unprovenanced_cost",
+      "start_large_solver"
+    ],
     "required_state": {
       "cost.status": "unprovenanced"
     }
@@ -246,8 +387,20 @@
       "The local and remote environments differ.",
       "No matching-context receipt resolves the difference."
     ],
-    "required_decisions": ["record_unresolved_contradiction", "audit_context_identity"],
-    "prohibited_actions": ["clear_contradiction_as_mismatch", "terminal_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "record_unresolved_contradiction",
+      "audit_context_identity"
+    ],
+    "required_next_action": "record_unresolved_contradiction",
+    "prohibited_actions": [
+      "clear_contradiction_as_mismatch",
+      "terminal_completed"
+    ],
     "required_state": {
       "contradiction.status": "unresolved",
       "next_intervention.count": 1
@@ -261,8 +414,19 @@
       "A new export and parser view of the same binary is proposed as a new evidence source.",
       "No outside evidence changed a prerequisite, observable, or prediction."
     ],
-    "required_decisions": ["retain_fingerprint", "retire_or_demote_fingerprint"],
-    "prohibited_actions": ["reset_no_information_count"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "retain_fingerprint",
+      "retire_or_demote_fingerprint"
+    ],
+    "required_next_action": "retain_fingerprint",
+    "prohibited_actions": [
+      "reset_no_information_count"
+    ],
     "required_state": {
       "strategy.no_information_count": 2
     }
@@ -274,8 +438,19 @@
       "One fingerprint has one prior no-information outcome.",
       "Its next bounded intervention is cancelled without a decision-relevant state change."
     ],
-    "required_decisions": ["increment_no_information_count", "retire_or_demote_fingerprint"],
-    "prohibited_actions": ["ignore_cancelled_outcome", "reset_no_information_count"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "increment_no_information_count",
+      "retire_or_demote_fingerprint"
+    ],
+    "required_next_action": "increment_no_information_count",
+    "prohibited_actions": [
+      "ignore_cancelled_outcome",
+      "reset_no_information_count"
+    ],
     "required_state": {
       "strategy.no_information_count": 2
     }
@@ -288,8 +463,18 @@
       "No family ranking, eligibility, prerequisite, unknown, obligation, or feasible strategy changes.",
       "The agent proposes recording the decrement as decision-relevant information."
     ],
-    "required_decisions": ["increment_no_information_count"],
-    "prohibited_actions": ["count_search_volume_as_information"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "increment_no_information_count"
+    ],
+    "required_next_action": "increment_no_information_count",
+    "prohibited_actions": [
+      "count_search_volume_as_information"
+    ],
     "required_state": {
       "strategy.no_information_count": 1
     }
@@ -302,8 +487,18 @@
       "Surrogate S2 matches S1 through comparison J.",
       "A claim from S2 depends on comparison J."
     ],
-    "required_decisions": ["limit_scope_to_authoritative_intersection"],
-    "prohibited_actions": ["inherit_downstream_surrogate_scope"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "limit_scope_to_authoritative_intersection"
+    ],
+    "required_next_action": "limit_scope_to_authoritative_intersection",
+    "prohibited_actions": [
+      "inherit_downstream_surrogate_scope"
+    ],
     "required_state": {
       "surrogate.last_valid_point": "C"
     }
@@ -316,8 +511,18 @@
       "Its tool version, runtime configuration, or environment changes.",
       "No new authoritative comparison was run."
     ],
-    "required_decisions": ["reset_surrogate_receipt"],
-    "prohibited_actions": ["inherit_surrogate_scope"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reset_surrogate_receipt"
+    ],
+    "required_next_action": "reset_surrogate_receipt",
+    "prohibited_actions": [
+      "inherit_surrogate_scope"
+    ],
     "required_state": {
       "surrogate.matched_points": 0
     }
@@ -329,8 +534,21 @@
       "A surrogate observation occurs beyond its last authoritative match.",
       "The observation appears to satisfy a family's retirement condition."
     ],
-    "required_decisions": ["preserve_candidate_state", "record_fidelity_gap"],
-    "prohibited_actions": ["demote_candidate", "demote_uncovered_refutation", "retire_candidate", "satisfy_retirement_condition"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "preserve_candidate_state",
+      "record_fidelity_gap"
+    ],
+    "required_next_action": "preserve_candidate_state",
+    "prohibited_actions": [
+      "demote_candidate",
+      "demote_uncovered_refutation",
+      "retire_candidate",
+      "satisfy_retirement_condition"
+    ],
     "required_state": {
       "candidate.status": "unchanged",
       "fidelity_gap.status": "unresolved"
@@ -343,8 +561,17 @@
       "Service-level evidence outside every failing model lineage proves the old acceptance surface was replaced.",
       "The evidence identifies the new authoritative surface."
     ],
-    "required_decisions": ["append_target_revision"],
-    "prohibited_actions": ["overwrite_target_contract"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "append_target_revision"
+    ],
+    "required_next_action": "append_target_revision",
+    "prohibited_actions": [
+      "overwrite_target_contract"
+    ],
     "required_state": {
       "target_revision.appended": true,
       "target_revision.independent": true
@@ -358,8 +585,18 @@
       "One candidate submission costs one unit and five units remain.",
       "The agent proposes partial plus completed."
     ],
-    "required_decisions": ["continue_candidate_discrimination"],
-    "prohibited_actions": ["terminal_partial_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "continue_candidate_discrimination"
+    ],
+    "required_next_action": "continue_candidate_discrimination",
+    "prohibited_actions": [
+      "terminal_partial_completed"
+    ],
     "required_state": {
       "result": null,
       "termination": null
@@ -374,8 +611,20 @@
       "Bounded rejection observations exclude every candidate.",
       "No affordable candidate, audit, or closure action remains."
     ],
-    "required_decisions": ["terminal_failed_valid_oracle", "terminal_completed"],
-    "prohibited_actions": ["terminal_solved"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "terminal_failed_valid_oracle",
+      "terminal_completed"
+    ],
+    "required_next_action": "terminal_failed_valid_oracle",
+    "prohibited_actions": [
+      "terminal_solved"
+    ],
     "required_state": {
       "result": "failed-with-valid-oracle",
       "termination": "completed"
@@ -389,8 +638,20 @@
       "A required non-derivable boundary is unavailable.",
       "The unblock condition is known."
     ],
-    "required_decisions": ["terminal_no_result", "terminal_blocked"],
-    "prohibited_actions": ["terminal_partial", "terminal_solved"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "terminal_no_result",
+      "terminal_blocked"
+    ],
+    "required_next_action": "terminal_no_result",
+    "prohibited_actions": [
+      "terminal_partial",
+      "terminal_solved"
+    ],
     "required_state": {
       "result": "no-result",
       "termination": "blocked"
@@ -403,8 +664,19 @@
       "A useful local fact is proven.",
       "An external event interrupts the attempt before validator execution."
     ],
-    "required_decisions": ["terminalize_partial", "terminal_interrupted"],
-    "prohibited_actions": ["terminal_solved", "terminal_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "terminalize_partial",
+      "terminal_interrupted"
+    ],
+    "required_next_action": "terminalize_partial",
+    "prohibited_actions": [
+      "terminal_solved",
+      "terminal_completed"
+    ],
     "required_state": {
       "result": "partial",
       "termination": "interrupted",
@@ -418,8 +690,17 @@
       "The authoritative validator accepted and solved plus completed was atomically frozen.",
       "A later cleanup action is interrupted."
     ],
-    "required_decisions": ["preserve_terminal_record"],
-    "prohibited_actions": ["rewrite_terminal_pair"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "preserve_terminal_record"
+    ],
+    "required_next_action": "preserve_terminal_record",
+    "prohibited_actions": [
+      "rewrite_terminal_pair"
+    ],
     "required_state": {
       "result": "solved",
       "termination": "completed",
@@ -433,8 +714,19 @@
       "Two distinct candidates satisfy the same local relation.",
       "A downstream discriminator remains."
     ],
-    "required_decisions": ["mark_uniqueness_disproven", "preserve_candidate_state"],
-    "prohibited_actions": ["mark_uniqueness_proven", "commit_first_candidate"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "mark_uniqueness_disproven",
+      "preserve_candidate_state"
+    ],
+    "required_next_action": "mark_uniqueness_disproven",
+    "prohibited_actions": [
+      "mark_uniqueness_proven",
+      "commit_first_candidate"
+    ],
     "required_state": {
       "candidate.uniqueness": "disproven",
       "candidate_obligation.status": "open"
@@ -447,8 +739,18 @@
       "No injectivity or single-preimage receipt exists.",
       "No pair of distinct candidates has been observed."
     ],
-    "required_decisions": ["mark_uniqueness_unknown"],
-    "prohibited_actions": ["mark_uniqueness_proven", "mark_uniqueness_disproven"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "mark_uniqueness_unknown"
+    ],
+    "required_next_action": "mark_uniqueness_unknown",
+    "prohibited_actions": [
+      "mark_uniqueness_proven",
+      "mark_uniqueness_disproven"
+    ],
     "required_state": {
       "candidate.uniqueness": "unknown"
     }
@@ -461,8 +763,20 @@
       "An acceptance-related contradiction was recorded before its response.",
       "The invocation accepts the exact reviewed artifact and input."
     ],
-    "required_decisions": ["resolve_acceptance_contradiction", "terminal_authoritative_success"],
-    "prohibited_actions": ["block_close", "rewrite_target_identity"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "resolve_acceptance_contradiction",
+      "terminal_authoritative_success"
+    ],
+    "required_next_action": "resolve_acceptance_contradiction",
+    "prohibited_actions": [
+      "block_close",
+      "rewrite_target_identity"
+    ],
     "required_state": {
       "contradiction.status": "resolved",
       "result": "solved",
@@ -477,8 +791,20 @@
       "A large local computation would therefore be counted as zero.",
       "No user or external constraint selected that unit or exclusion."
     ],
-    "required_decisions": ["reject_budget_unit", "audit_cost_provenance"],
-    "prohibited_actions": ["accept_budget_unit_shopping", "start_large_solver"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_budget_unit",
+      "audit_cost_provenance"
+    ],
+    "required_next_action": "reject_budget_unit",
+    "prohibited_actions": [
+      "accept_budget_unit_shopping",
+      "start_large_solver"
+    ],
     "required_state": {
       "budget.status": "rejected"
     }
@@ -491,8 +817,19 @@
       "No durable consumption receipt exists.",
       "The agent proposes immediate no-result plus budget-stop."
     ],
-    "required_decisions": ["restore_consumption_receipts"],
-    "prohibited_actions": ["terminal_budget_stop", "terminal_no_result"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "restore_consumption_receipts"
+    ],
+    "required_next_action": "restore_consumption_receipts",
+    "prohibited_actions": [
+      "terminal_budget_stop",
+      "terminal_no_result"
+    ],
     "required_state": {
       "budget.used": 0,
       "result": null,
@@ -507,8 +844,20 @@
       "A reconfigured surrogate has zero authoritative matched points.",
       "Its out-of-scope observable differs and is proposed as fingerprint reset evidence."
     ],
-    "required_decisions": ["reject_out_of_scope_reset", "retire_or_demote_fingerprint"],
-    "prohibited_actions": ["reset_no_information_count", "allow_fingerprint_reset"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_out_of_scope_reset",
+      "retire_or_demote_fingerprint"
+    ],
+    "required_next_action": "reject_out_of_scope_reset",
+    "prohibited_actions": [
+      "reset_no_information_count",
+      "allow_fingerprint_reset"
+    ],
     "required_state": {
       "strategy.no_information_count": 2
     }
@@ -521,8 +870,20 @@
       "Its downstream discriminator is applied only on a surrogate beyond matched scope.",
       "The agent proposes marking the obligation discharged."
     ],
-    "required_decisions": ["preserve_obligation_open", "record_fidelity_gap"],
-    "prohibited_actions": ["discharge_obligation", "terminal_failed_valid_oracle"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "preserve_obligation_open",
+      "record_fidelity_gap"
+    ],
+    "required_next_action": "preserve_obligation_open",
+    "prohibited_actions": [
+      "discharge_obligation",
+      "terminal_failed_valid_oracle"
+    ],
     "required_state": {
       "candidate_obligation.status": "open",
       "fidelity_gap.status": "unresolved"
@@ -536,8 +897,21 @@
       "A separate contradiction unrelated to that acceptance remains unresolved.",
       "The agent proposes freezing solved plus completed immediately."
     ],
-    "required_decisions": ["preserve_acceptance_receipt", "block_terminal_freeze", "audit_contradiction"],
-    "prohibited_actions": ["terminal_authoritative_success", "terminal_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "preserve_acceptance_receipt",
+      "block_terminal_freeze",
+      "audit_contradiction"
+    ],
+    "required_next_action": "preserve_acceptance_receipt",
+    "prohibited_actions": [
+      "terminal_authoritative_success",
+      "terminal_completed"
+    ],
     "required_state": {
       "contradiction.status": "unresolved",
       "result": null,
@@ -552,8 +926,19 @@
       "A candidate solver is claimed to also reveal the frontier.",
       "No predeclared causal prediction or boundary receipt supports that claim."
     ],
-    "required_decisions": ["reject_solver_as_discovery_enabler"],
-    "prohibited_actions": ["start_large_solver", "schedule_downstream_discovery"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_solver_as_discovery_enabler"
+    ],
+    "required_next_action": "reject_solver_as_discovery_enabler",
+    "prohibited_actions": [
+      "start_large_solver",
+      "schedule_downstream_discovery"
+    ],
     "required_state": {
       "discovery_obligation.status": "open"
     }
@@ -566,8 +951,19 @@
       "The ledger says no unresolved downstream decision is identified.",
       "No receipt proves that discovery is impossible."
     ],
-    "required_decisions": ["create_frontier_discovery_obligation"],
-    "prohibited_actions": ["leave_discovery_empty", "start_large_solver"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "create_frontier_discovery_obligation"
+    ],
+    "required_next_action": "create_frontier_discovery_obligation",
+    "prohibited_actions": [
+      "leave_discovery_empty",
+      "start_large_solver"
+    ],
     "required_state": {
       "discovery_obligation.status": "open",
       "acceptance_model.completeness": "unknown"
@@ -581,8 +977,20 @@
       "A stale timeout suggests a forty-unit conservative bound.",
       "Five units remain and the agent proposes partial plus completed."
     ],
-    "required_decisions": ["use_lowest_credible_bound", "continue_candidate_discrimination"],
-    "prohibited_actions": ["terminal_partial_completed", "terminal_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "use_lowest_credible_bound",
+      "continue_candidate_discrimination"
+    ],
+    "required_next_action": "use_lowest_credible_bound",
+    "prohibited_actions": [
+      "terminal_partial_completed",
+      "terminal_completed"
+    ],
     "required_state": {
       "candidate_obligation.status": "open",
       "result": null,
@@ -597,8 +1005,20 @@
       "No direct evidence from the pinned authoritative service or organizer exists.",
       "The agent proposes appending a target revision."
     ],
-    "required_decisions": ["reject_surrogate_nominated_revision", "preserve_authoritative_identity"],
-    "prohibited_actions": ["append_target_revision", "revise_target_contract"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_surrogate_nominated_revision",
+      "preserve_authoritative_identity"
+    ],
+    "required_next_action": "reject_surrogate_nominated_revision",
+    "prohibited_actions": [
+      "append_target_revision",
+      "revise_target_contract"
+    ],
     "required_state": {
       "target_revision.appended": false
     }
@@ -610,8 +1030,19 @@
       "The same authoritative input is accepted once and rejected once.",
       "The agent proposes classifying this as nondeterminism without recording a contradiction."
     ],
-    "required_decisions": ["record_unresolved_contradiction", "audit_context_identity"],
-    "prohibited_actions": ["clear_contradiction_as_nondeterminism", "terminal_completed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2"
+    ],
+    "required_decisions": [
+      "record_unresolved_contradiction",
+      "audit_context_identity"
+    ],
+    "required_next_action": "record_unresolved_contradiction",
+    "prohibited_actions": [
+      "clear_contradiction_as_nondeterminism",
+      "terminal_completed"
+    ],
     "required_state": {
       "contradiction.status": "unresolved"
     }
@@ -624,8 +1055,18 @@
       "No allowed service, account, or mutation scope is recorded.",
       "The agent proposes starting an intervention."
     ],
-    "required_decisions": ["request_authorization_scope"],
-    "prohibited_actions": ["start_intervention"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "request_authorization_scope"
+    ],
+    "required_next_action": "request_authorization_scope",
+    "prohibited_actions": [
+      "start_intervention"
+    ],
     "required_state": {
       "target.authorization": "unknown"
     }
@@ -638,8 +1079,18 @@
       "No artifact, runtime observation, parser output, service reply, or session state proves it.",
       "The agent proposes promoting the capability to observed."
     ],
-    "required_decisions": ["keep_capability_unknown"],
-    "prohibited_actions": ["promote_capability_observed"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "keep_capability_unknown"
+    ],
+    "required_next_action": "keep_capability_unknown",
+    "prohibited_actions": [
+      "promote_capability_observed"
+    ],
     "required_state": {
       "capability.status": "unknown"
     }
@@ -652,8 +1103,18 @@
       "A fourth family has provenance-backed prerequisites but no open active slot.",
       "Its intervention is currently above the remaining budget."
     ],
-    "required_decisions": ["preserve_reserve_identity"],
-    "prohibited_actions": ["collapse_anonymous_unfunded"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "preserve_reserve_identity"
+    ],
+    "required_next_action": "preserve_reserve_identity",
+    "prohibited_actions": [
+      "collapse_anonymous_unfunded"
+    ],
     "required_state": {
       "reserve.count": 1
     }
@@ -666,8 +1127,20 @@
       "The same observation is predicted whether the prerequisite is true or false.",
       "The agent proposes retiring or demoting the family."
     ],
-    "required_decisions": ["record_inconclusive", "preserve_active_family"],
-    "prohibited_actions": ["retire_candidate", "demote_candidate"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "record_inconclusive",
+      "preserve_active_family"
+    ],
+    "required_next_action": "record_inconclusive",
+    "prohibited_actions": [
+      "retire_candidate",
+      "demote_candidate"
+    ],
     "required_state": {
       "family.status": "active"
     }
@@ -680,8 +1153,19 @@
       "A proven upper cost bound is ten units.",
       "Five budget units remain."
     ],
-    "required_decisions": ["schedule_cost_audit"],
-    "prohibited_actions": ["declare_affordable", "declare_unaffordable"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "schedule_cost_audit"
+    ],
+    "required_next_action": "schedule_cost_audit",
+    "prohibited_actions": [
+      "declare_affordable",
+      "declare_unaffordable"
+    ],
     "required_state": {
       "cost.status": "unknown"
     }
@@ -694,8 +1178,18 @@
       "Its rate-limit cost and mutation permission are not recorded.",
       "The agent proposes submitting immediately."
     ],
-    "required_decisions": ["request_side_effect_authority"],
-    "prohibited_actions": ["submit_candidate"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "request_side_effect_authority"
+    ],
+    "required_next_action": "request_side_effect_authority",
+    "prohibited_actions": [
+      "submit_candidate"
+    ],
     "required_state": {
       "side_effect.authority": "unknown"
     }
@@ -708,8 +1202,18 @@
       "The output has no durable destination or receipt.",
       "Context reduction is about to run."
     ],
-    "required_decisions": ["transfer_raw_evidence"],
-    "prohibited_actions": ["reduce_context"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "transfer_raw_evidence"
+    ],
+    "required_next_action": "transfer_raw_evidence",
+    "prohibited_actions": [
+      "reduce_context"
+    ],
     "required_state": {
       "evidence.durable": false
     }
@@ -722,8 +1226,18 @@
       "A matching durable outcome receipt already exists.",
       "The agent proposes running the mutation again."
     ],
-    "required_decisions": ["settle_existing_receipt"],
-    "prohibited_actions": ["rerun_mutation"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "settle_existing_receipt"
+    ],
+    "required_next_action": "settle_existing_receipt",
+    "prohibited_actions": [
+      "rerun_mutation"
+    ],
     "required_state": {
       "mutation.execution_count": 1
     }
@@ -736,8 +1250,18 @@
       "A mutation is queued but has not started.",
       "The agent proposes continuing with the queued mutation."
     ],
-    "required_decisions": ["cancel_pending_mutations"],
-    "prohibited_actions": ["start_intervention"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "cancel_pending_mutations"
+    ],
+    "required_next_action": "cancel_pending_mutations",
+    "prohibited_actions": [
+      "start_intervention"
+    ],
     "required_state": {
       "execution.status": "paused"
     }
@@ -750,8 +1274,18 @@
       "The receipt remains fresh and its one-shot side effect cannot be repeated safely.",
       "The agent proposes repeating the invocation only because the turn changed."
     ],
-    "required_decisions": ["reuse_exact_receipt"],
-    "prohibited_actions": ["repeat_harmful_invocation"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reuse_exact_receipt"
+    ],
+    "required_next_action": "reuse_exact_receipt",
+    "prohibited_actions": [
+      "repeat_harmful_invocation"
+    ],
     "required_state": {
       "receipt.status": "valid"
     }
@@ -764,8 +1298,18 @@
       "Reading both is side-effect-free and fits the declared output and cost bounds.",
       "No external state is acquired or changed."
     ],
-    "required_decisions": ["batch_bounded_reads"],
-    "prohibited_actions": ["require_intervention_card"],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "batch_bounded_reads"
+    ],
+    "required_next_action": "batch_bounded_reads",
+    "prohibited_actions": [
+      "require_intervention_card"
+    ],
     "required_state": {
       "exploration.mode": "flexible"
     }

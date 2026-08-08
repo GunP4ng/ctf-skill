@@ -207,13 +207,15 @@ ctf_attempt:
 
 ## 검증 결과
 
-2026-08-01 개정판은 다음 검사를 통과했습니다.
+2026-08-08 개정판은 다음 검사를 통과했습니다.
 
 - 정책 동작 시나리오 52건: `PASS: 52 model-control cases`
   - 필수 행동을 빠뜨리는 경우
   - 금지된 행동을 고르는 경우
   - 상태를 바꿔야 할 때 바꾸지 않는 경우
   - 정책 용어만 나열해 검사를 넘기려는 경우
+- prompt schema v3가 case별 상태 키/JSON scalar type, candidate action 집합,
+  caller가 선택한 provenance를 공개하되 답안 값은 공개하지 않는지 확인하는 구조화 테스트
 - Ruff 코드 검사와 형식 검사
 - basedpyright 타입 검사: 오류 0, 경고 0
 - JSON 문법 검사와 `git diff --check`
@@ -221,13 +223,27 @@ ctf_attempt:
 검증 대상 파일의 SHA-256:
 
 - 정책 (`skills/ctf-solving/SKILL.md`): `572a93a2bc6d66c50df5b3e2829278ed60fd8f047b1533f2e04d2681e2caf7b6`
-- 검사 설명 (`tests/ctf-solving-model-controls.md`): `9853d3ff82b90c9f976881377fb563bcc0810942368643ef20a192359d38fed4`
-- 실행기 (`tests/run_model_controls.py`): `d6369d34b7aef4d28c2add8352ff552514090133e800d42b3376807d39902bef`
-- typed grader (`tests/model_control_harness.py`): `8708b6d6da7a74718ec79bc2b98c728736e657496f6f6652fc3b2fc8aea9ce8c`
-- 검사 시나리오 (`tests/model-control-cases.json`): `d097a10661a529717f71e4b330ca796ba88433679e0a6a497fcf230a599a0550`
-- Claude Opus 응답 기록 (`tests/fixtures/opus5-model-control-responses.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
+- 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
+- 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
+- typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
+- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `e62d8a17d4e6965c384f69dad46ba64a949c2d1297536dda586df238f83fb6d5`
+- 검사 시나리오 (`tests/model-control-cases.json`): `48ad0dcc29af2aec45096f8830025ab99341e7af78a39d3dfcd350da373edc2a`
+- 보관용 legacy 응답 기록 (`tests/fixtures/legacy/opus5-model-control-responses.v1.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
+  - 검증되지 않은 schema v1 기록이며 현재 schema v2 response grader의 통과 증거로 사용하지 않습니다.
 
 이 검증은 규칙에 맞는 판단과 상태 변경이 나오는지를 확인합니다. 실제 CTF 해결률이나 풀이 속도를 보장하지는 않습니다.
+
+2026-08-08 실제 모델 qualification은 별도 결과입니다.
+`openai-codex/gpt-5.6-sol`(thinking `medium`)을 Senpi 2026.8.7 +
+OmO Native print surface에서 generic 52건과 derived product 8건에 각각 한
+번만 실행했으며, strict schema-v2 parser/grader 결과는
+**NON_QUALIFIED**였습니다. Synthetic 52/52 self-test와 위 파일 hash는
+정책·검사기 구현의 재현성을 뜻할 뿐 실제 모델 준수나 base-model 향상을
+뜻하지 않습니다. 사용자 취소로 treatment와 여섯 CTF domain 평가는
+실행되지 않았고, 실측되지 않은 treatment는 `oh-my-ctf`에서 제거됐습니다.
+정확한 session, artifact, parser/grader 수치는
+`oh-my-ctf/docs/CTF_MODEL_EVALUATION_LEDGER.md`의 2026-08-09 closure
+항목에 기록합니다.
 
 ## 저장소 책임과 OmCTF 동기화
 
@@ -236,21 +252,26 @@ truth입니다. 가설, 반증, 후보 보존, surrogate 범위, budget, 모순,
 판정처럼 OmCTF 없이도 의미가 있는 규칙은 여기에서 먼저 변경하고
 검증합니다.
 
-`oh-my-ctf`는 검증된 `SKILL.md`를 byte-identical snapshot으로
-패키징합니다. Senpi TUI 활성화, session lifecycle, tool 권한, evidence
-저장, sandbox, terminal authority는 skill 문장이 아니라 OmCTF runtime과
-그 integration test가 소유합니다.
+`oh-my-ctf`는 이 정책에서 자격을 갖춘(qualified) compact profile을
+파생해 패키징합니다. 이 profile은 원문 복사본이 아니라 OmO Native에서
+필요한 지시만 유지하고, Senpi TUI 활성화, session lifecycle, tool 권한,
+evidence 저장, sandbox, terminal authority는 OmCTF runtime과 integration
+test에 맡깁니다. `PROVENANCE.json`은 원본 정책과 case/grader, local
+profile, package manifest의 각 hash를 따로 고정하고 `COVERAGE.json`은
+각 model-control case의 profile/runtime 소유자를 기록합니다.
 
 동기화 순서는 다음과 같습니다.
 
-1. 이 저장소에서 정책과 model-control case를 함께 수정합니다.
+1. 이 저장소에서 범용 정책과 model-control case를 함께 수정합니다.
 2. self-test와 policy-bound model 응답 평가를 통과시킵니다.
-3. `SKILL.md`를 OmCTF package에 byte-identical하게 반영합니다.
-4. OmCTF의 provenance와 build-pinned hash를 갱신합니다.
+3. OmCTF compact profile에 영향을 주는 의미 변화만 profile에 반영하고,
+   전체 case의 ownership/anchor를 다시 검증합니다.
+4. OmCTF의 provenance와 build-pinned hash를 현재 파일별 hash로 갱신합니다.
 5. OmCTF package, activation, evidence, release test를 실행합니다.
 
-양쪽 `SKILL.md`를 독립적으로 편집하지 않습니다. OmCTF에만 필요한
-activation 규칙을 범용 skill에 추가하지 않고 runtime test로 검증합니다.
+범용 규칙은 이 저장소에서 먼저 바꾸고, OmCTF 전용 규칙은 범용 skill에
+복제하지 않습니다. profile, package manifest, model-control case 중 하나의
+hash가 이후 바뀌면 OmCTF 계획의 Task 9에서 다시 동기화해야 합니다.
 
 ## 파일 구성
 
@@ -264,10 +285,12 @@ ctf-skill/
     ├── __init__.py
     ├── ctf-solving-model-controls.md
     ├── fixtures/
-    │   └── opus5-model-control-responses.json
+    │   └── legacy/
+    │       └── opus5-model-control-responses.v1.json  # unverified schema v1 archive
     ├── model-control-cases.json
     ├── model_control_harness.py
-    └── run_model_controls.py
+    ├── run_model_controls.py
+    └── test_model_control_harness.py
 ```
 
 ## 사용 범위

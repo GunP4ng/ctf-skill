@@ -6,20 +6,28 @@ wording. They apply to any authorized CTF category.
 ## Executable coverage
 
 `model-control-cases.json` is the machine-readable regression matrix.
-`run_model_controls.py` emits prompts containing only policy text, scenario
-title, and `given` facts, then grades selected action IDs and state transitions
-without pinning exact prose. Required actions must be selected; forbidden actions must be
-absent. Response bundles carry the exact policy and case-matrix SHA-256, so a
+`run_model_controls.py` emits prompt-schema-v3 records containing policy text,
+scenario facts, and a per-case machine contract. That contract exposes only the
+case ID, caller-selected provenance kind, response field names, unclassified
+candidate action IDs, allowed evidence refs, and the exact state-key-to-JSON-
+scalar-type map. It never labels required or prohibited actions and never
+contains expected decisions, next actions, or state values. Response bundles
+remain schema v2 and carry exact policy and case-matrix SHA-256 values, so a
 stale model run cannot certify changed policy bytes. The self-test proves that
 missing actions, vocabulary dumps, missing null-valued state, premature terminal
 claims, illegal terminal pairs, and stale policy hashes fail.
+
+`fixtures/legacy/opus5-model-control-responses.v1.json` is unverified v1
+archival data. It is retained unchanged for historical inspection only; the
+active v2 parser rejects it and never treats it as synthetic or real evidence.
 
 ```sh
 uv run -m tests.run_model_controls self-test \
   --cases tests/model-control-cases.json
 uv run -m tests.run_model_controls emit \
   --policy skills/ctf-solving/SKILL.md \
-  --cases tests/model-control-cases.json
+  --cases tests/model-control-cases.json \
+  --provenance-kind real
 uv run -m tests.run_model_controls grade \
   --policy skills/ctf-solving/SKILL.md \
   --cases tests/model-control-cases.json \
