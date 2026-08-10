@@ -1313,5 +1313,314 @@
     "required_state": {
       "exploration.mode": "flexible"
     }
+  },
+  {
+    "id": "family-equal-prediction-grouping",
+    "title": "Two workers predict the same observation for one prerequisite",
+    "given": [
+      "Two workers propose separately named hypotheses over the same prerequisite.",
+      "Both predict the identical observation from the identical discriminator.",
+      "No evidence separates their accept or reject signals."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "group_equal_prediction_family",
+      "declare_family_contract"
+    ],
+    "required_next_action": "group_equal_prediction_family",
+    "prohibited_actions": [
+      "split_equal_prediction_family",
+      "count_search_volume_as_information"
+    ],
+    "required_state": {
+      "family.family_id": "fam-1",
+      "family.predicted_observation": "shared",
+      "family.cheapest_discriminator": "shared",
+      "family.accept_signal": "declared",
+      "family.reject_signal": "declared",
+      "family.prerequisite_coverage": "pending",
+      "family.active_count": 1
+    }
+  },
+  {
+    "id": "family-distinct-prediction-separation",
+    "title": "One label carries two distinct predicted observations",
+    "given": [
+      "One proposed family predicts two different observations for the same discriminator.",
+      "Each prediction has its own accept and reject signal.",
+      "Merging them would leave one slot without a single prediction."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "separate_distinct_prediction_family",
+      "declare_family_contract"
+    ],
+    "required_next_action": "separate_distinct_prediction_family",
+    "prohibited_actions": [
+      "merge_distinct_prediction_family",
+      "collapse_anonymous_unfunded"
+    ],
+    "required_state": {
+      "family.family_id": "fam-2a",
+      "family.predicted_observation": "distinct",
+      "family.cheapest_discriminator": "shared",
+      "family.accept_signal": "declared",
+      "family.reject_signal": "declared",
+      "family.prerequisite_coverage": "pending",
+      "family.active_count": 2
+    }
+  },
+  {
+    "id": "family-covered-reject-retirement",
+    "title": "A covered discriminator returns the declared reject signal",
+    "given": [
+      "The discriminator ran in the context that establishes the family prerequisite.",
+      "A falsifier-coverage receipt shows the prerequisite states are distinguishable.",
+      "The observed signal equals the family's declared reject signal."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "retire_covered_reject_family"
+    ],
+    "required_next_action": "retire_covered_reject_family",
+    "prohibited_actions": [
+      "retire_uncovered_reject_family",
+      "preserve_active_family"
+    ],
+    "required_state": {
+      "family.family_id": "fam-3",
+      "family.predicted_observation": "reject-observed",
+      "family.cheapest_discriminator": "executed",
+      "family.accept_signal": "absent",
+      "family.reject_signal": "observed",
+      "family.prerequisite_coverage": "covered",
+      "family.status": "retired"
+    }
+  },
+  {
+    "id": "family-dependent-retirement",
+    "title": "A covered refutation makes one dependent prerequisite impossible",
+    "given": [
+      "A covered refutation retired the parent family.",
+      "One dependent family requires the refuted prerequisite and cannot hold.",
+      "A second dependent family remains supported by independent evidence."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "retire_impossible_dependent",
+      "preserve_active_family"
+    ],
+    "required_next_action": "retire_impossible_dependent",
+    "prohibited_actions": [
+      "retire_unaffected_dependent",
+      "collapse_anonymous_unfunded"
+    ],
+    "required_state": {
+      "family.family_id": "fam-4",
+      "family.predicted_observation": "parent-refuted",
+      "family.cheapest_discriminator": "executed",
+      "family.accept_signal": "absent",
+      "family.reject_signal": "observed",
+      "family.prerequisite_coverage": "covered",
+      "dependent.retired_count": 1,
+      "dependent.active_count": 1
+    }
+  },
+  {
+    "id": "family-reopen-on-new-evidence",
+    "title": "New evidence invalidates the receipt behind a retirement",
+    "given": [
+      "A family was retired on a covered reject signal.",
+      "New evidence proves that discriminator observed a different prerequisite context.",
+      "The family's predicted observation is untested under the corrected context."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reopen_retired_family",
+      "declare_family_contract"
+    ],
+    "required_next_action": "reopen_retired_family",
+    "prohibited_actions": [
+      "keep_invalidated_retirement",
+      "increment_no_information_count"
+    ],
+    "required_state": {
+      "family.family_id": "fam-5",
+      "family.predicted_observation": "untested",
+      "family.cheapest_discriminator": "pending",
+      "family.accept_signal": "declared",
+      "family.reject_signal": "declared",
+      "family.prerequisite_coverage": "invalidated",
+      "family.status": "active"
+    }
+  },
+  {
+    "id": "child-wave-missing-disposition",
+    "title": "A child wave completes without a root disposition",
+    "given": [
+      "One child wave returned its report for an active family.",
+      "The root has not yet recorded a disposition for that child.",
+      "The child report is not yet reproduced at the root."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "record_root_disposition"
+    ],
+    "required_next_action": "record_root_disposition",
+    "prohibited_actions": [
+      "promote_child_output_without_disposition",
+      "reduce_context"
+    ],
+    "required_state": {
+      "disposition.child_id": "child-1",
+      "disposition.evidence_ref": "given:1",
+      "disposition.family_id": "fam-1",
+      "disposition.status": "pending",
+      "disposition.modeled_state_change": "none"
+    }
+  },
+  {
+    "id": "child-wave-unsupported-state-change",
+    "title": "A child claims a modeled state change its evidence cannot support",
+    "given": [
+      "One child reports that its family is refuted and asks the root to retire it.",
+      "Its cited evidence lacks the prerequisite coverage that refutation needs.",
+      "No other evidence distinguishes the family's prerequisite states."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "record_root_disposition",
+      "reject_unsupported_state_change",
+      "preserve_active_family"
+    ],
+    "required_next_action": "reject_unsupported_state_change",
+    "prohibited_actions": [
+      "apply_unsupported_state_change",
+      "retire_uncovered_reject_family"
+    ],
+    "required_state": {
+      "disposition.child_id": "child-2",
+      "disposition.evidence_ref": "given:2",
+      "disposition.family_id": "fam-2",
+      "disposition.status": "rejected",
+      "disposition.modeled_state_change": "none"
+    }
+  },
+  {
+    "id": "review-escalation-premature",
+    "title": "External review is requested after one no-information round",
+    "given": [
+      "One completed round produced no information for the current fingerprint.",
+      "A justified discriminator for an active family remains affordable and untried.",
+      "No prior external review proposal exists."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "continue_local_discriminator"
+    ],
+    "required_next_action": "continue_local_discriminator",
+    "prohibited_actions": [
+      "activate_ctf_review",
+      "submit_review_packet_externally"
+    ],
+    "required_state": {
+      "review.no_information_rounds": 1,
+      "review.pending_discriminator": "available",
+      "review.material_pivot": "none",
+      "review.untested_prior_proposal": "none",
+      "review.activation": "withheld",
+      "review.external_submission": "none"
+    }
+  },
+  {
+    "id": "review-escalation-authorized",
+    "title": "Every escalation precondition holds after two no-information rounds",
+    "given": [
+      "Two completed rounds produced no information for the same fingerprint.",
+      "No justified discriminator and no viable material representation pivot remain.",
+      "No prior external review proposal is untested and no upload approval exists yet."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "activate_ctf_review",
+      "prepare_review_packet_locally"
+    ],
+    "required_next_action": "prepare_review_packet_locally",
+    "prohibited_actions": [
+      "submit_review_packet_externally",
+      "increment_no_information_count"
+    ],
+    "required_state": {
+      "review.no_information_rounds": 2,
+      "review.pending_discriminator": "none",
+      "review.material_pivot": "none",
+      "review.untested_prior_proposal": "none",
+      "review.activation": "prepared",
+      "review.external_submission": "none"
+    }
+  },
+  {
+    "id": "review-output-requires-root-replay",
+    "title": "An external review answer claims a solved candidate",
+    "given": [
+      "An approved external review returned one candidate and called it correct.",
+      "The root has not reproduced that candidate on the local oracle.",
+      "The real acceptance surface has not been used for that candidate."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "replay_review_output_locally"
+    ],
+    "required_next_action": "replay_review_output_locally",
+    "prohibited_actions": [
+      "promote_review_output_as_terminal",
+      "terminal_solved"
+    ],
+    "required_state": {
+      "review.output_authority": "advisory",
+      "review.root_replay": "required",
+      "result": null,
+      "termination": null
+    }
   }
 ]

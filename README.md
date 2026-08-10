@@ -124,6 +124,26 @@
 
 같은 파일을 다시 받거나, 인코딩·라이브러리·작업자 수만 바꾸는 것은 새 전략이 아닙니다. 같은 전략에서 두 번 연속으로 판단에 도움이 되는 정보가 나오지 않으면 다른 접근으로 바꾸거나 멈춥니다.
 
+하위 작업(child)에게 나눠 준 일이 끝나면, 루트가 child마다 한 줄짜리 처리
+결과를 남깁니다. `child_id`, 판단 근거로 삼은 증거, 영향을 받는 가설 계열,
+`accepted`/`rejected`/`pending`, 그리고 실제로 바뀐 상태(없으면 `none`)입니다.
+처리 결과가 없는 child 보고는 상태를 바꾸지 못하고, 근거가 부족한 상태 변경
+요구는 `rejected`로 남기고 계열은 그대로 둡니다.
+
+### 5-1. 외부 리뷰는 막혔을 때만, 준비까지만 한다
+
+별도로 설치한 외부 리뷰 스킬은 다음 네 조건이 모두 맞을 때만 켭니다.
+
+1. 같은 fingerprint에서 정보가 없는 라운드가 두 번 끝났다
+2. 아직 시도할 만한 정당한 구분 실험이 남아 있지 않다
+3. 표현을 실질적으로 바꿀 방법이 남아 있지 않다
+4. 검증하지 않은 이전 리뷰 제안이 없다
+
+어렵거나 느리다는 이유만으로는 켜지 않습니다. 자동 활성화는 로컬에서 패킷을
+준비하는 데까지이며, 외부 전송은 사용자가 그 패킷을 명시적으로 승인해야
+합니다. 리뷰 응답은 참고 자료일 뿐이라 루트가 직접 재현하고 실제 채점
+창구로 확인하기 전에는 결과를 확정하지 못합니다.
+
 ### 6. 예산을 유리하게 바꾸지 않는다
 
 첫 실행 전에 예산의 단위, 포함할 비용, 초기 한도를 정합니다. 이 값은 사용자가 정해 주거나, 상위 작업에서 내려오거나, 실제 외부 제약에서 옵니다.
@@ -207,13 +227,17 @@ ctf_attempt:
 
 ## 검증 결과
 
-2026-08-08 개정판은 다음 검사를 통과했습니다.
+2026-08-10 개정판은 다음 검사를 통과했습니다.
 
-- 정책 동작 시나리오 52건: `PASS: 52 model-control cases`
+- 정책 동작 시나리오 62건: `PASS: 62 model-control cases`
   - 필수 행동을 빠뜨리는 경우
   - 금지된 행동을 고르는 경우
   - 상태를 바꿔야 할 때 바꾸지 않는 경우
   - 정책 용어만 나열해 검사를 넘기려는 경우
+  - 예측이 같은 가설을 계열 하나로 묶고, 다른 예측은 나누는 경우
+  - 근거 없는 은퇴·재개방을 걸러 내는 경우
+  - child 처리 결과를 빠뜨리거나 근거 없이 상태를 바꾸는 경우
+  - 조건이 모자란데 외부 리뷰를 켜거나, 재현 없이 리뷰 응답을 확정하는 경우
 - prompt schema v3가 case별 상태 키/JSON scalar type, candidate action 집합,
   caller가 선택한 provenance를 공개하되 답안 값은 공개하지 않는지 확인하는 구조화 테스트
 - Ruff 코드 검사와 형식 검사
@@ -222,12 +246,12 @@ ctf_attempt:
 
 검증 대상 파일의 SHA-256:
 
-- 정책 (`skills/ctf-solving/SKILL.md`): `572a93a2bc6d66c50df5b3e2829278ed60fd8f047b1533f2e04d2681e2caf7b6`
+- 정책 (`skills/ctf-solving/SKILL.md`): `dc85695ec59aee56db2a36b310ae1abf161a925d7b65ecfe0caf09e0f1749d1d`
 - 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
 - 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
 - typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
-- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `e62d8a17d4e6965c384f69dad46ba64a949c2d1297536dda586df238f83fb6d5`
-- 검사 시나리오 (`tests/model-control-cases.json`): `48ad0dcc29af2aec45096f8830025ab99341e7af78a39d3dfcd350da373edc2a`
+- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `ee84b53d8a6a411897015f80f12b31bfcb280c4922610f849f58f69773cd1d78`
+- 검사 시나리오 (`tests/model-control-cases.json`): `1102586746209242376f04457c20328bd0b88905168d951d5d0b2451190be3ac`
 - 보관용 legacy 응답 기록 (`tests/fixtures/legacy/opus5-model-control-responses.v1.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
   - 검증되지 않은 schema v1 기록이며 현재 schema v2 response grader의 통과 증거로 사용하지 않습니다.
 
@@ -251,6 +275,12 @@ OmO Native print surface에서 generic 52건과 derived product 8건에 각각 �
 truth입니다. 가설, 반증, 후보 보존, surrogate 범위, budget, 모순, 결과
 판정처럼 OmCTF 없이도 의미가 있는 규칙은 여기에서 먼저 변경하고
 검증합니다.
+
+가설 계열 정의, child 처리 결과(root disposition), 외부 리뷰 활성화 조건도
+이 저장소가 소유합니다. 외부 리뷰 패킷 구성과 실제 전송, Senpi/OmO의 skill
+활성화, session lifecycle, tool 권한, terminal authority는 여기에서 정의하지
+않습니다. 이 정책은 언제 준비를 허용하는지만 정하고, 전송 자체는 승인받은
+리뷰 스킬이 수행합니다.
 
 `oh-my-ctf`는 이 정책에서 자격을 갖춘(qualified) compact profile을
 파생해 패키징합니다. 이 profile은 원문 복사본이 아니라 OmO Native에서

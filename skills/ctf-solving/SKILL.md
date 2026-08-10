@@ -79,10 +79,16 @@ supported family in reserve by identity or a provenance-backed grouped
 representation; never collapse decision-relevant candidates into an anonymous
 unknown.
 
-Each active family states its prerequisite, one bounded intervention, true
-signal, false signal, retirement condition, evidence provenance, and the
-prerequisite coverage required for a valid falsifier.
+A family is identified by what it predicts, not by who proposed it. Each active
+family states six fields: `family_id`, the predicted observation, the cheapest
+discriminator that can produce it, the accept signal, the reject signal, and the
+prerequisite coverage required for a valid falsifier. A family missing any of
+the six is not active; complete it or hold it in reserve.
 
+- group proposals that share one predicted observation under the same discriminator
+  into one `family_id`, regardless of how many workers or labels produced them;
+- separate one label into distinct `family_id`s when it carries distinct predicted
+  observations, so every active slot keeps exactly one prediction;
 - choose the cheapest separator across active families;
 - use mutual exclusivity only when evidence proves it;
 - represent a compound hypothesis as one slot with one prediction;
@@ -93,10 +99,16 @@ prerequisite coverage required for a valid falsifier.
 - leave eligibility unchanged when an intervention lacks prerequisite coverage
   or produces the same signal in both prerequisite states;
 - retire only when a falsifier-coverage receipt proves the prerequisite was
-  tested in matching context and the observed signal distinguishes its states;
+  tested in matching context and the observed reject signal distinguishes its
+  states;
 - retire dependents only when the covered refutation makes their prerequisites
-  impossible; and
-- reopen a retirement when new evidence invalidates it.
+  impossible, and preserve every dependent that independent evidence still
+  supports; and
+- reopen a retirement by `family_id` when new evidence invalidates its coverage
+  receipt, restoring the family's declared prediction as untested.
+
+Counting proposals, workers, or lanes is not modeling; only distinct predicted
+observations create distinct families.
 
 Record budget unit, limit, used, remaining, and provenance for every
 budget-consuming action. An action is proven affordable only when a credible
@@ -125,6 +137,16 @@ budget, output schema, and stop condition. The parent owns hypothesis
 promotion, canonical state changes, and closure. Worker prose is evidence input,
 not authority.
 
+After each child wave, record one compact root disposition per child with five
+fields: `child_id`, the evidence reference it is judged on, the `family_id` it
+affects, `accepted`, `rejected`, or `pending`, and the changed modeled state or
+`none`. A child result without a disposition changes nothing, and a child claim
+whose cited evidence does not meet this policy's requirement for that state
+change is `rejected` with `none` as its state change; the affected family keeps
+its current eligibility. Only an `accepted` disposition may carry a non-`none`
+modeled state change. Child, external oracle, and external review output stays
+advisory until the root reproduces it.
+
 Serialize interventions whose stateful-resource boundaries intersect. Disjoint
 bounded reads or experiments may run concurrently when their outputs and
 mutation rights remain isolated.
@@ -141,8 +163,12 @@ Use this loop:
 1. **Pin** — preserve originals and record identities or hashes.
 2. **Read** — batch bounded side-effect-free observations while their cost and
    output remain controlled.
-3. **Model** — keep active families small and preserve reserve identities.
-4. **Discriminate** — run one bounded decision-changing intervention.
+3. **Model** — keep active families small, one prediction per `family_id`, and
+   preserve reserve identities.
+4. **Discriminate** — run the cheapest discriminator that separates active
+   predictions, as one bounded decision-changing intervention.
+   Record its prerequisite coverage with the observed signal; an uncovered
+   observation settles nothing about eligibility.
 5. **Settle** — retain raw output, record the actual outcome, then update state.
 6. **Close** — replay when feasible and use the real acceptance surface.
 
@@ -161,6 +187,28 @@ state, decomposition, relevant unknowns, and observable predicate. After two,
 require new evidence, a material representation pivot, or a frontier audit
 before a third equivalent intervention or terminal transition. Changing only
 tool, engine, prompt, parameter, or implementation does not reset the count.
+
+## 6a) Bounded external review escalation
+
+Activate a separately installed external review skill only when all four hold:
+two completed no-information rounds share one fingerprint, no justified
+discriminator remains pending, no viable material representation pivot remains,
+and no prior review proposal remains untested. Difficulty, slowness, or an
+inconclusive round alone is not a precondition. If any precondition fails,
+continue the cheapest local discriminator instead.
+
+Activation prepares a bounded packet locally and never transmits it. External
+submission requires explicit user approval of the exact packet for that attempt
+and belongs to the review skill; without approval, stop after preparation.
+Preparation is not an intervention outcome and does not change the
+no-information count.
+
+A returned review answer is advisory evidence. Convert it into declared
+families and discriminators, then replay any candidate through the local oracle
+and the real acceptance surface. Review output alone never retires a family,
+promotes capability, or populates terminal fields. If the review skill is
+unavailable, record that once and make a material pivot rather than repeating
+the stalled fingerprint.
 
 Before a non-`solved` terminal transition, record one compact frontier audit.
 For discovery, representation pivot, active/reserve discrimination, and
