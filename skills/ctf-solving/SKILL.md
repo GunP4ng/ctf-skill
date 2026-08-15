@@ -210,7 +210,8 @@ An authority rejection is a state-repair request, not a reason to resume broad
 exploration. Follow a safe machine `requiredAction` exactly once:
 
 - `retry_without_future_evidence`: repeat prepare without any result receipt;
-- `use_projected_evidence`: use the exact projected receipt;
+- `retry_with_documented_schema`: rebuild only the rejected request from the
+  active tool schema;
 - `settle_child_disposition`: complete the child sequence above;
 - `material_pivot_or_review`: register a genuinely different representation
   or activate review when its preconditions hold;

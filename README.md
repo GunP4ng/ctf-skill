@@ -248,7 +248,7 @@ ctf_attempt:
 
 검증 대상 파일의 SHA-256:
 
-- 정책 (`skills/ctf-solving/SKILL.md`): `9b3210dd33ee706b31ece935fc95c66a31c23a8d4e6f64adb7b36098bea57c67`
+- 정책 (`skills/ctf-solving/SKILL.md`): `c302125f983fd9d9b7d87d2d60739ccf886357be1c151baaeaf95fecdd9aad0b`
 - 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
 - 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
 - typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
