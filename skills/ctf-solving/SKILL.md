@@ -85,6 +85,14 @@ discriminator that can produce it, the accept signal, the reject signal, and the
 prerequisite coverage required for a valid falsifier. A family missing any of
 the six is not active; complete it or hold it in reserve.
 
+Use stable machine identifiers for `family_id`, representation identity,
+semantic subject, intervention, and predicate contract. They are identities,
+not prose: use letters, digits, `.`, `_`, or `-`, with the explanation kept in
+the accompanying reason. A family and a representation are independent. A
+family predicts an outcome; a representation determines which properties are
+visible. Never reuse one identifier as both merely because one experiment
+mentions both.
+
 - group proposals that share one predicted observation under the same discriminator
   into one `family_id`, regardless of how many workers or labels produced them;
 - separate one label into distinct `family_id`s when it carries distinct predicted
@@ -147,6 +155,19 @@ its current eligibility. Only an `accepted` disposition may carry a non-`none`
 modeled state change. Child, external oracle, and external review output stays
 advisory until the root reproduces it.
 
+Use this exact child sequence:
+
+1. wait for or fetch the terminal child result;
+2. use the harness-projected evidence ID bound to that child, never a guessed
+   or nearby receipt;
+3. reproduce any decision-changing claim at the root when feasible;
+4. record the child's `accepted`, `rejected`, or `pending` disposition;
+5. only then spawn another child or request external review.
+
+If the harness reports an unresolved child, settle or cancel that exact child.
+If it reports a completed undispositioned child, classify the exact projected
+child/evidence pair. Never pair one child's output with another receipt.
+
 Serialize interventions whose stateful-resource boundaries intersect. Disjoint
 bounded reads or experiments may run concurrently when their outputs and
 mutation rights remain isolated.
@@ -172,6 +193,32 @@ Use this loop:
 5. **Settle** — retain raw output, record the actual outcome, then update state.
 6. **Close** — replay when feasible and use the real acceptance surface.
 
+When native CTF controls are active, every decision-changing intervention is a
+four-phase transaction:
+
+1. **Prepare** — declare stable family, current representation, semantic
+   subject, and machine predicate. Do not include an evidence ID: result
+   evidence does not exist yet.
+2. **Execute** — run exactly one native call only after prepare is accepted.
+3. **Settle** — use only the exact harness-minted receipt from that execution.
+   Never invent a future `tool-result-*` identity.
+4. **Decide** — retain or discard the evidence, update family or
+   representation state, request review, or begin closure before another
+   decision-changing intervention.
+
+An authority rejection is a state-repair request, not a reason to resume broad
+exploration. Follow a safe machine `requiredAction` exactly once:
+
+- `retry_without_future_evidence`: repeat prepare without any result receipt;
+- `use_projected_evidence`: use the exact projected receipt;
+- `settle_child_disposition`: complete the child sequence above;
+- `material_pivot_or_review`: register a genuinely different representation
+  or activate review when its preconditions hold;
+- `call_ctf_attempt_status`: refresh canonical state, then repair only the
+  rejected phase.
+
+Do not infer hidden validator facts from a generic rejection.
+
 Before an intervention, declare its expected discriminator, bounded cost,
 stateful-resource boundary, display ceiling, and durable raw-output destination.
 Do not overwrite the sole copy of required evidence. Context keeps only bounded
@@ -186,7 +233,9 @@ Track consecutive no-information outcomes by semantic fingerprint: modeled
 state, decomposition, relevant unknowns, and observable predicate. After two,
 require new evidence, a material representation pivot, or a frontier audit
 before a third equivalent intervention or terminal transition. Changing only
-tool, engine, prompt, parameter, or implementation does not reset the count.
+tool, engine, prompt, parameter, implementation, intervention ID, or predicate
+label does not reset the count. If the harness returns
+`material_pivot_or_review`, do not rename and retry the same lane.
 
 ## 6a) Bounded external review escalation
 
@@ -196,6 +245,12 @@ discriminator remains pending, no viable material representation pivot remains,
 and no prior review proposal remains untested. Difficulty, slowness, or an
 inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
+
+When the canonical control surface requires external review after those
+preconditions hold, activate `ctf-review` immediately. Do not ask for
+packet-specific user approval and do not run another equivalent intervention
+first. The review skill still owns environment verification, immutable scope,
+single submission, cleanup, and receipts.
 
 Activation delegates the complete bounded packet lifecycle to the review skill.
 After that skill verifies its external environment and exact immutable scope,
@@ -239,6 +294,13 @@ remain null. One atomic transition populates and freezes them before cleanup.
   evidence covering every remaining candidate.
 - `partial` requires a useful proven fact plus explicit absence of acceptance.
 - `no-result` records why no useful fact was proven.
+
+Latch a reproducible exact candidate immediately. Once a root-owned verifier
+emits a candidate matching the public result format and a second run reproduces
+it, stop diagnostics, refactoring, optimization, and further delegation.
+Durably publish the candidate, register and execute the terminal replay,
+exercise the real acceptance surface, and submit the explicit terminal
+proposal. Local replay alone still cannot authorize `solved`.
 
 Every terminal record names artifact/environment identity, terminal event,
 validator response, closure evidence, and for a non-solved result its frontier

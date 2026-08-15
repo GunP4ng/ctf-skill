@@ -1622,5 +1622,117 @@
       "result": null,
       "termination": null
     }
+  },
+  {
+    "id": "prepare-before-future-evidence",
+    "title": "A discriminator is chosen before its result receipt exists",
+    "given": [
+      "One bounded discriminator has been selected for the active family and representation.",
+      "The intervention has not executed and no result evidence receipt exists.",
+      "The harness requires semantic preparation before the native tool call."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "prepare_without_future_evidence"
+    ],
+    "required_next_action": "prepare_without_future_evidence",
+    "prohibited_actions": [
+      "invent_future_evidence_id",
+      "execute_before_prepare_acceptance"
+    ],
+    "required_state": {
+      "control.phase": "prepare",
+      "evidence.result_reference": null,
+      "evidence.reference_authority": "harness"
+    }
+  },
+  {
+    "id": "completed-child-exact-disposition",
+    "title": "A completed child has one harness-bound result receipt",
+    "given": [
+      "The child handle is settled and the harness projects its exact result evidence ID.",
+      "No root disposition exists for that child.",
+      "Another child spawn is blocked until the root classifies the result."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "replay_child_result_at_root",
+      "dispose_exact_child_evidence"
+    ],
+    "required_next_action": "replay_child_result_at_root",
+    "prohibited_actions": [
+      "pair_child_with_unrelated_evidence",
+      "spawn_before_child_disposition"
+    ],
+    "required_state": {
+      "child.status": "settled",
+      "child.disposition": null,
+      "child.evidence_binding": "harness"
+    }
+  },
+  {
+    "id": "canonical-no-information-pivot-or-review",
+    "title": "Two equivalent signed interventions settled inconclusively",
+    "given": [
+      "Two interventions with the same family, representation, subject, and predicate settled INCONCLUSIVE.",
+      "Neither settlement produced retained catalog evidence or a material representation change.",
+      "A third implementation-only variation is proposed under the same semantic fingerprint."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "choose_material_pivot_or_review"
+    ],
+    "required_next_action": "choose_material_pivot_or_review",
+    "prohibited_actions": [
+      "repeat_equivalent_intervention",
+      "rename_contract_to_reset_lane"
+    ],
+    "required_state": {
+      "semantic.no_information_rounds": 2,
+      "semantic.same_fingerprint_blocked": true,
+      "semantic.allowed_next": "material_pivot_or_review"
+    }
+  },
+  {
+    "id": "reproduced-candidate-latches-closure",
+    "title": "A deterministic verifier emits an exact candidate",
+    "given": [
+      "A root-owned deterministic verifier emits a candidate matching the public result format.",
+      "The same verifier reproduces that candidate on a second run.",
+      "The authoritative acceptance surface has not evaluated it yet."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "latch_candidate_for_closure",
+      "prepare_authoritative_acceptance"
+    ],
+    "required_next_action": "prepare_authoritative_acceptance",
+    "prohibited_actions": [
+      "continue_diagnostics_before_candidate_publication",
+      "refactor_verifier_before_acceptance",
+      "terminal_solved"
+    ],
+    "required_state": {
+      "candidate.status": "reproduced",
+      "closure.phase": "acceptance",
+      "result": null,
+      "termination": null
+    }
   }
 ]

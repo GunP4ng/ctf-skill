@@ -27,7 +27,7 @@ JsonObject: TypeAlias = dict[str, object]
 Mutation: TypeAlias = Callable[[JsonObject], object]
 
 CASES_PATH = Path(__file__).with_name("model-control-cases.json")
-SEMANTIC_SHA256 = "402b47a8250fda85eba4513d83458b74fa5e10ca78a699370d8dded42293e927"
+SEMANTIC_SHA256 = "bbd55013b8e678cbfeaf5df7c2d1ca766053e1546762eb4faddc926ba09e88ca"
 FAMILY_CASE_IDS = (
     "family-equal-prediction-grouping",
     "family-distinct-prediction-separation",
@@ -43,6 +43,12 @@ REVIEW_CASE_IDS = (
     "review-escalation-premature",
     "review-escalation-authorized",
     "review-output-requires-root-replay",
+)
+TRANSACTION_CASE_IDS = (
+    "prepare-before-future-evidence",
+    "completed-child-exact-disposition",
+    "canonical-no-information-pivot-or-review",
+    "reproduced-candidate-latches-closure",
 )
 CASE_IDS = (
     "partial-authoritative-rejection",
@@ -100,6 +106,7 @@ CASE_IDS = (
     *FAMILY_CASE_IDS,
     *DISPOSITION_CASE_IDS,
     *REVIEW_CASE_IDS,
+    *TRANSACTION_CASE_IDS,
 )
 
 
@@ -373,13 +380,13 @@ class ModelControlSchemaV2Tests(TestCase):
         )
         self.assertTrue(grade(self.cases, unreplayed)[replay.case_id])
 
-    def test_preserves_the_pinned_62_case_semantics(self) -> None:
+    def test_preserves_the_pinned_66_case_semantics(self) -> None:
         raw_cases = cast(
             list[JsonObject],
             json.loads(CASES_PATH.read_text(encoding="utf-8")),
         )
         self.assertEqual(tuple(case.case_id for case in self.cases), CASE_IDS)
-        self.assertEqual(len(self.cases), 62)
+        self.assertEqual(len(self.cases), 66)
         semantic = [
             {
                 "id": case["id"],
@@ -395,7 +402,7 @@ class ModelControlSchemaV2Tests(TestCase):
             separators=(",", ":"),
         ).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(), SEMANTIC_SHA256)
-        self.assertEqual(len({case.case_id for case in self.cases}), 62)
+        self.assertEqual(len({case.case_id for case in self.cases}), 66)
 
     def test_loads_an_exact_synthetic_v2_bundle(self) -> None:
         self.assertEqual(self._load(self._bundle()), self.responses)

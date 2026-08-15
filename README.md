@@ -227,9 +227,9 @@ ctf_attempt:
 
 ## 검증 결과
 
-2026-08-10 개정판은 다음 검사를 통과했습니다.
+2026-08-15 개정판은 다음 검사를 통과했습니다.
 
-- 정책 동작 시나리오 62건: `PASS: 62 model-control cases`
+- 정책 동작 시나리오 66건: `PASS: 66 model-control cases`
   - 필수 행동을 빠뜨리는 경우
   - 금지된 행동을 고르는 경우
   - 상태를 바꿔야 할 때 바꾸지 않는 경우
@@ -238,6 +238,8 @@ ctf_attempt:
   - 근거 없는 은퇴·재개방을 걸러 내는 경우
   - child 처리 결과를 빠뜨리거나 근거 없이 상태를 바꾸는 경우
   - 조건이 모자란데 외부 리뷰를 켜거나, 재현 없이 리뷰 응답을 확정하는 경우
+  - prepare 전에 미래 evidence ID를 만들거나 child/evidence binding을 바꾸는 경우
+  - 같은 semantic fingerprint를 반복하거나 재현된 candidate의 closure를 미루는 경우
 - prompt schema v3가 case별 상태 키/JSON scalar type, candidate action 집합,
   caller가 선택한 provenance를 공개하되 답안 값은 공개하지 않는지 확인하는 구조화 테스트
 - Ruff 코드 검사와 형식 검사
@@ -246,12 +248,12 @@ ctf_attempt:
 
 검증 대상 파일의 SHA-256:
 
-- 정책 (`skills/ctf-solving/SKILL.md`): `dc85695ec59aee56db2a36b310ae1abf161a925d7b65ecfe0caf09e0f1749d1d`
+- 정책 (`skills/ctf-solving/SKILL.md`): `9b3210dd33ee706b31ece935fc95c66a31c23a8d4e6f64adb7b36098bea57c67`
 - 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
 - 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
 - typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
-- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `ee84b53d8a6a411897015f80f12b31bfcb280c4922610f849f58f69773cd1d78`
-- 검사 시나리오 (`tests/model-control-cases.json`): `1102586746209242376f04457c20328bd0b88905168d951d5d0b2451190be3ac`
+- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `4323198c69835f8038a64ab10aeb543b1733bbc7679857c22581e4820bb56343`
+- 검사 시나리오 (`tests/model-control-cases.json`): `1a0030d6e1d35932c80ffa9f0938c52fb5a3cc528fbb3b512b52111c809b0907`
 - 보관용 legacy 응답 기록 (`tests/fixtures/legacy/opus5-model-control-responses.v1.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
   - 검증되지 않은 schema v1 기록이며 현재 schema v2 response grader의 통과 증거로 사용하지 않습니다.
 
