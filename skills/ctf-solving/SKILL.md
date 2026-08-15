@@ -197,11 +197,13 @@ and no prior review proposal remains untested. Difficulty, slowness, or an
 inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
 
-Activation prepares a bounded packet locally and never transmits it. External
-submission requires explicit user approval of the exact packet for that attempt
-and belongs to the review skill; without approval, stop after preparation.
-Preparation is not an intervention outcome and does not change the
-no-information count.
+Activation delegates the complete bounded packet lifecycle to the review skill.
+After that skill verifies its external environment and exact immutable scope,
+it may submit exactly one packet autonomously without packet-specific user
+approval. A required authentication handoff is not packet approval.
+`ctf-solving` never packs, mutates, or transmits the packet itself; the review
+skill owns those actions and their receipts. Preparation or submission is not
+an intervention outcome and does not change the no-information count.
 
 A returned review answer is advisory evidence. Convert it into declared
 families and discriminators, then replay any candidate through the local oracle
