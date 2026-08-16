@@ -262,15 +262,17 @@ inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
 
 When the canonical control surface requires external review after those
-preconditions hold, activate `ctf-review` immediately. Do not ask for
-packet-specific user approval and do not run another equivalent intervention
-first. The review skill still owns environment verification, immutable scope,
-single submission, cleanup, and receipts.
+preconditions hold, activate `ctf-review` to verify the external environment
+and prepare one exact immutable packet. Do not run another equivalent
+intervention first. Before any external submission, present that exact packet
+scope and obtain explicit packet-specific user approval. The review skill still
+owns immutable scope, single submission, cleanup, and receipts.
 
 Activation delegates the complete bounded packet lifecycle to the review skill.
 After that skill verifies its external environment and exact immutable scope,
-it may submit exactly one packet autonomously without packet-specific user
-approval. A required authentication handoff is not packet approval.
+it may submit exactly one packet only after the explicit approval. A required
+authentication handoff is not packet approval, and approval for a different
+packet or scope does not transfer.
 `ctf-solving` never packs, mutates, or transmits the packet itself; the review
 skill owns those actions and their receipts. Preparation or submission is not
 an intervention outcome and does not change the no-information count.
@@ -308,7 +310,9 @@ rederives it from pre-contribution evidence. Endpoint, rejection,
 prioritization, or cancellation alone does not make a result assisted.
 
 While live, result, termination, terminal event, validator response, and closure
-remain null. One atomic transition populates and freezes them before cleanup.
+remain null. First settle every attempt-owned native resource and retain a
+complete cleanup receipt. Only then may one atomic transition populate and
+freeze the terminal fields.
 
 - `solved` requires authoritative acceptance and a clean replayable mechanism
   when feasible; for a one-shot or non-rehostable surface, retain the exact
@@ -327,9 +331,9 @@ proposal. Local replay alone still cannot authorize `solved`.
 
 Every terminal record names artifact/environment identity, terminal event,
 validator response, closure evidence, and for a non-solved result its frontier
-audit or genuine external-interruption exception. Acceptance remains solved if
-later cleanup is interrupted; record cleanup separately without rewriting the
-frozen attempt.
+audit or genuine external-interruption exception. Authoritative acceptance
+remains retained evidence while cleanup is incomplete; retry or explicitly
+settle cleanup before freezing the attempt.
 
 ## 8) Domain routing
 

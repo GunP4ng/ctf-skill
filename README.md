@@ -185,7 +185,7 @@
 - `interrupted`: 외부에서 작업이 중단됐습니다.
 - `budget-stop`: 정한 예산을 모두 썼습니다.
 
-실행 가능한 확인 작업이 남아 있으면 `completed`를 쓸 수 없습니다. 종료 결과는 한 번 기록하면 그대로 둡니다. 이후 뒷정리 단계에서 오류가 나도 고쳐 쓰지 않습니다.
+실행 가능한 확인 작업이 남아 있으면 `completed`를 쓸 수 없습니다. attempt가 만든 process와 child를 모두 정리하고 완전한 cleanup receipt를 남긴 뒤에만 종료 결과를 한 번 기록해 고정합니다. 정리가 끝나지 않았다면 acceptance evidence를 보존한 채 종료를 고정하지 않습니다.
 
 ## 상태 기록 예시
 
@@ -250,7 +250,7 @@ ctf_attempt:
 
 검증 대상 파일의 SHA-256:
 
-- 정책 (`skills/ctf-solving/SKILL.md`): `cddf9af2e553c71ce765c59629efc973b146cc23502117ad614eb05a5f6c3eb3`
+- 정책 (`skills/ctf-solving/SKILL.md`): `fdc46c9ce5246c987de7cec0083872c8b0f8490ab6fc27e1e5d930b6e431f2e7`
 - 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
 - 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
 - typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
