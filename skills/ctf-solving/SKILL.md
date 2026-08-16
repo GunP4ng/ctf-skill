@@ -93,6 +93,11 @@ family predicts an outcome; a representation determines which properties are
 visible. Never reuse one identifier as both merely because one experiment
 mentions both.
 
+A material representation pivot requires referenced source evidence, a
+reproducible transform or model, observed output, and the newly visible property
+or decision change. Announcing a new identifier, tool, backend, or parameter is
+not representation progress.
+
 - group proposals that share one predicted observation under the same discriminator
   into one `family_id`, regardless of how many workers or labels produced them;
 - separate one label into distinct `family_id`s when it carries distinct predicted
@@ -117,6 +122,10 @@ mentions both.
 
 Counting proposals, workers, or lanes is not modeling; only distinct predicted
 observations create distinct families.
+
+Before a costly solver, full-state search, or exploit build, name the cheapest
+feasible discriminator and its family-dependent signals. If bypassing it,
+record evidence showing why each cheaper separator cannot decide.
 
 Record budget unit, limit, used, remaining, and provenance for every
 budget-consuming action. An action is proven affordable only when a credible
@@ -238,6 +247,11 @@ tool, engine, prompt, parameter, implementation, intervention ID, or predicate
 label does not reset the count. If the harness returns
 `material_pivot_or_review`, do not rename and retry the same lane.
 
+Treat solver `unknown`, timeout, interruption, and backend error as the same
+no-information outcome when semantic subject, unresolved variables, and
+observable predicate are unchanged. Changing solver, backend, or parameters
+alone is not a pivot.
+
 ## 6a) Bounded external review escalation
 
 Activate a separately installed external review skill only when all four hold:
@@ -284,6 +298,14 @@ Use one result and one termination.
 - Legal pairs: `solved` only with `completed`;
   `failed-with-valid-oracle` with `completed` or `budget-stop`; `partial` or
   `no-result` with any termination.
+
+Record result attribution separately as `independent` or `assisted`. For each
+material user or external contribution, preserve its source and classify it as
+a mechanism, exploit chain, solver, candidate, endpoint, rejection,
+prioritization, or cancellation. A supplied mechanism, exploit chain, solver,
+or candidate keeps the downstream result assisted unless a sealed replay
+rederives it from pre-contribution evidence. Endpoint, rejection,
+prioritization, or cancellation alone does not make a result assisted.
 
 While live, result, termination, terminal event, validator response, and closure
 remain null. One atomic transition populates and freezes them before cleanup.

@@ -1680,11 +1680,11 @@
   },
   {
     "id": "canonical-no-information-pivot-or-review",
-    "title": "Two equivalent signed interventions settled inconclusively",
+    "title": "Two equivalent solver interventions settled without information",
     "given": [
-      "Two interventions with the same family, representation, subject, and predicate settled INCONCLUSIVE.",
-      "Neither settlement produced retained catalog evidence or a material representation change.",
-      "A third implementation-only variation is proposed under the same semantic fingerprint."
+      "Two solver interventions over the same semantic subject, unresolved variables, and observable predicate returned unknown and timeout.",
+      "Both exact receipts were preserved for review, but neither changed modeled state or produced a material representation pivot.",
+      "A third attempt changes backend, parameters, family label, and intervention ID while preserving the same semantic fingerprint."
     ],
     "evidence_refs": [
       "given:1",
@@ -1697,12 +1697,45 @@
     "required_next_action": "choose_material_pivot_or_review",
     "prohibited_actions": [
       "repeat_equivalent_intervention",
-      "rename_contract_to_reset_lane"
+      "rename_contract_to_reset_lane",
+      "rename_family_to_reset_lane",
+      "change_backend_to_reset_lane"
     ],
     "required_state": {
       "semantic.no_information_rounds": 2,
       "semantic.same_fingerprint_blocked": true,
       "semantic.allowed_next": "material_pivot_or_review"
+    }
+  },
+  {
+    "id": "user-supplied-mechanism-remains-assisted",
+    "title": "Authoritative acceptance follows a user-supplied exploit mechanism",
+    "given": [
+      "The user supplies the decisive exploit mechanism and a working solver.",
+      "The model repairs transport integration and obtains authoritative acceptance.",
+      "No sealed replay has independently rederived the mechanism from pre-contribution evidence."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "preserve_user_contribution_provenance",
+      "mark_result_assisted",
+      "record_assisted_acceptance"
+    ],
+    "required_next_action": "record_assisted_acceptance",
+    "prohibited_actions": [
+      "claim_independent_discovery",
+      "discard_user_contribution_provenance"
+    ],
+    "required_state": {
+      "result": "solved",
+      "termination": "completed",
+      "result.attribution": "assisted",
+      "contribution.source": "user",
+      "acceptance.status": "accepted"
     }
   },
   {
