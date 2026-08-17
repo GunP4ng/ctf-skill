@@ -1954,5 +1954,41 @@
       "result": null,
       "termination": null
     }
+  },
+  {
+    "id": "review-standing-authorization-auto-submit",
+    "title": "Explicit standing review authority advances through an exact receipt",
+    "given": [
+      "The ctf-review activation gate is satisfied, every relevant child is settled and dispositioned, and no cheaper local discriminator or material representation pivot remains.",
+      "An exact immutable bounded packet has been packed and verified, the dedicated browser is logged in, no approval receipt exists, and no external submission has occurred.",
+      "The user explicitly authorized ctf-review in this conversation to automatically submit bounded immutable evidence packets and retrieve responses without pausing for per-packet approval.",
+      "The response remains advisory until root replay and authoritative acceptance succeed."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "bind_standing_authorization_to_exact_packet",
+      "create_exact_approval_receipt",
+      "record_exact_packet_scope"
+    ],
+    "required_next_action": "create_exact_approval_receipt",
+    "prohibited_actions": [
+      "wait_for_packet_specific_approval",
+      "submit_without_receipt",
+      "promote_review_output_as_terminal"
+    ],
+    "required_state": {
+      "review.authorization_standing_explicit": true,
+      "packet.packed": true,
+      "receipt.present": false,
+      "review.submission_ready_for_receipt": true,
+      "review.root_replay_required": true,
+      "result": null,
+      "termination": null
+    }
   }
 ]

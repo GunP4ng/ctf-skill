@@ -295,15 +295,28 @@ root replay, and authoritative acceptance.
 When the canonical control surface requires external review after those
 preconditions hold, activate `ctf-review` to verify the external environment
 and prepare one exact immutable packet. Do not run another equivalent
-intervention first. Before any external submission, present that exact packet
-scope and obtain explicit packet-specific user approval. The review skill still
-owns immutable scope, single submission, cleanup, and receipts.
+intervention first.
+
+External-write authority has exactly two explicit modes. If the current
+conversation contains a user instruction to automatically submit bounded
+immutable `ctf-review` packets and retrieve their responses without a
+per-packet pause, treat it as standing authority only for that named review
+workflow. After packing, verify and record the exact manifest scope, bind that
+authority to the manifest by creating its one-shot approval receipt, then
+submit it exactly once without stopping for another approval question.
+Treat scope recording and authority binding as decisions in the same control
+step; the next executable action is creation of the exact approval receipt, not
+a separate abstract binding action.
+Otherwise, present the exact packet and wait for explicit packet-specific user
+approval before creating the receipt. Never submit without the manifest-bound
+receipt, reuse one receipt or packet, broaden standing authority to another
+external write, or infer standing authority from task authorization, package
+installation, browser login, configuration, prior review use, or the fact that
+review would be helpful.
 
 Activation delegates the complete bounded packet lifecycle to the review skill.
-After that skill verifies its external environment and exact immutable scope,
-it may submit exactly one packet only after the explicit approval. A required
-authentication handoff is not packet approval, and approval for a different
-packet or scope does not transfer.
+A required authentication handoff is not external-write authority, and
+packet-specific approval for a different packet or scope does not transfer.
 `ctf-solving` never packs, mutates, or transmits the packet itself; the review
 skill owns those actions and their receipts. Preparation or submission is not
 an intervention outcome and does not change the no-information count.

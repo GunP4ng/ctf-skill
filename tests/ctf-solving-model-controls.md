@@ -69,6 +69,7 @@ The executable matrix covers:
 | Flexible bounded local reads | `bounded-read-batch-remains-flexible` |
 | Direct discriminator before monolithic solver | `direct-discriminator-before-monolithic-solver` |
 | Review, replay, and acceptance budget reservation | `review-budget-reserve-before-second-round` |
+| Standing automatic review authorization | `review-standing-authorization-auto-submit` |
 | Equivalent solver timeout fingerprint | `solver-timeout-encoding-same-fingerprint` |
 | Complete accounting before budget-stop | `budget-stop-missing-accounting` |
 | Target-relevant representation progress | `target-irrelevant-decode-not-progress` |
