@@ -275,6 +275,23 @@ and no prior review proposal remains untested. Difficulty, slowness, or an
 inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
 
+After one completed no-information deep round, protect a provenance-backed
+lower-bound budget floor for one review lifecycle, root replay, and
+authoritative acceptance before funding an unrestricted second deep round on
+the same fingerprint. Cap that second round to the budget above the floor while
+leaving a cheaper bounded discriminator eligible. A lower bound proves only
+that an action which would cross the floor knowingly makes the downstream path
+impossible; it does not prove the review path affordable, so use a credible
+upper bound when one is available. This reservation keeps review activation
+`withheld` until every activation precondition holds and never authorizes packet
+preparation, approval, or transmission.
+
+Once two same-fingerprint no-information rounds and all four activation
+conditions hold, settle and disposition every relevant child, then make
+`ctf-review` activation the mandatory next action before another equivalent
+worker or intervention. Preserve the protected budget for advisory conversion,
+root replay, and authoritative acceptance.
+
 When the canonical control surface requires external review after those
 preconditions hold, activate `ctf-review` to verify the external environment
 and prepare one exact immutable packet. Do not run another equivalent

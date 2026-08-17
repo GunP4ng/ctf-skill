@@ -29,7 +29,7 @@ JsonObject: TypeAlias = dict[str, object]
 Mutation: TypeAlias = Callable[[JsonObject], object]
 
 CASES_PATH = Path(__file__).with_name("model-control-cases.json")
-SEMANTIC_SHA256 = "78309f79d32a3cb67b8b7517d6e261a5f99546464ce04fbca5af9b83932ddd03"
+SEMANTIC_SHA256 = "2b21d45ee9a60c56dfafa6c66316ad6422a1ab45b749d5b2a4613d822f1e97b7"
 FAMILY_CASE_IDS = (
     "family-equal-prediction-grouping",
     "family-distinct-prediction-separation",
@@ -118,6 +118,7 @@ CASE_IDS = (
     *REVIEW_CASE_IDS,
     *TRANSACTION_CASE_IDS,
     *WEAK_TRAIT_CASE_IDS,
+    "review-budget-reserve-before-second-round",
 )
 
 
@@ -360,6 +361,21 @@ class ModelControlSchemaV2Tests(TestCase):
         self.assertIn("replay_review_output_locally", replay.required_decisions)
         self.assertIn("promote_review_output_as_terminal", replay.prohibited_actions)
 
+    def test_review_budget_floor_survives_the_second_round(self) -> None:
+        reserve = self._case("review-budget-reserve-before-second-round")
+        self.assertEqual(reserve.required_state["review.no_information_rounds"], 1)
+        self.assertEqual(reserve.required_state["review.activation"], "withheld")
+        self.assertEqual(reserve.required_state["budget.remaining"], 10)
+        self.assertEqual(reserve.required_state["budget.review_replay_reserve"], 6)
+        self.assertEqual(reserve.required_state["budget.second_round_cap"], 4)
+        self.assertIn("reserve_review_replay_budget", reserve.required_decisions)
+        self.assertIn("schedule_bounded_second_round", reserve.required_decisions)
+        self.assertIn(
+            "start_unrestricted_second_solver",
+            reserve.prohibited_actions,
+        )
+        self.assertIn("activate_ctf_review", reserve.prohibited_actions)
+
     def test_grader_rejects_missing_disposition_and_unreplayed_review_output(
         self,
     ) -> None:
@@ -403,13 +419,13 @@ class ModelControlSchemaV2Tests(TestCase):
         )
         self.assertTrue(grade(self.cases, unreplayed)[replay.case_id])
 
-    def test_preserves_the_pinned_72_case_semantics(self) -> None:
+    def test_preserves_the_pinned_73_case_semantics(self) -> None:
         raw_cases = cast(
             list[JsonObject],
             json.loads(CASES_PATH.read_text(encoding="utf-8")),
         )
         self.assertEqual(tuple(case.case_id for case in self.cases), CASE_IDS)
-        self.assertEqual(len(self.cases), 72)
+        self.assertEqual(len(self.cases), 73)
         semantic = [
             {
                 "id": case["id"],
@@ -425,7 +441,7 @@ class ModelControlSchemaV2Tests(TestCase):
             separators=(",", ":"),
         ).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(), SEMANTIC_SHA256)
-        self.assertEqual(len({case.case_id for case in self.cases}), 72)
+        self.assertEqual(len({case.case_id for case in self.cases}), 73)
 
     def test_loads_an_exact_synthetic_v2_bundle(self) -> None:
         self.assertEqual(self._load(self._bundle()), self.responses)

@@ -1919,5 +1919,40 @@
       "result": null,
       "termination": null
     }
+  },
+  {
+    "id": "review-budget-reserve-before-second-round",
+    "title": "One bounded round must preserve the review and replay reserve",
+    "given": [
+      "One completed deep round produced no information for the current semantic fingerprint.",
+      "Ten wall-clock units remain; external review, root replay, and authoritative acceptance have a credible combined lower-bound floor of six units.",
+      "A proposed unrestricted second solver round costs seven units, while a bounded second discriminator over the same fingerprint can complete within four units.",
+      "No cheaper local discriminator or material representation pivot is ready, and no prior review proposal exists."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3",
+      "given:4"
+    ],
+    "required_decisions": [
+      "reserve_review_replay_budget",
+      "schedule_bounded_second_round"
+    ],
+    "required_next_action": "schedule_bounded_second_round",
+    "prohibited_actions": [
+      "start_unrestricted_second_solver",
+      "activate_ctf_review",
+      "terminal_budget_stop"
+    ],
+    "required_state": {
+      "review.no_information_rounds": 1,
+      "review.activation": "withheld",
+      "budget.remaining": 10,
+      "budget.review_replay_reserve": 6,
+      "budget.second_round_cap": 4,
+      "result": null,
+      "termination": null
+    }
   }
 ]

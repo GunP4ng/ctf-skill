@@ -68,6 +68,7 @@ The executable matrix covers:
 | Trusted stop and safe receipt reuse | `trusted-stop-pauses-mutations`, `exact-receipt-reuse` |
 | Flexible bounded local reads | `bounded-read-batch-remains-flexible` |
 | Direct discriminator before monolithic solver | `direct-discriminator-before-monolithic-solver` |
+| Review, replay, and acceptance budget reservation | `review-budget-reserve-before-second-round` |
 | Equivalent solver timeout fingerprint | `solver-timeout-encoding-same-fingerprint` |
 | Complete accounting before budget-stop | `budget-stop-missing-accounting` |
 | Target-relevant representation progress | `target-irrelevant-decode-not-progress` |
