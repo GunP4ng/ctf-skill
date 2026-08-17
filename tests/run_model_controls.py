@@ -14,7 +14,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import cast
 
-from .model_control_harness import (
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from tests.model_control_harness import (
     Case,
     ProvenanceKind,
     Response,
@@ -281,9 +284,18 @@ def _response_items(bundle: dict[str, object]) -> list[dict[str, object]]:
 
 def _main() -> int:
     parser = argparse.ArgumentParser()
-    _ = parser.add_argument("mode", choices=("emit", "grade", "self-test"))
+    _ = parser.add_argument(
+        "mode",
+        choices=("emit", "grade", "self-test"),
+        nargs="?",
+        default="self-test",
+    )
     _ = parser.add_argument("--policy", type=Path)
-    _ = parser.add_argument("--cases", type=Path, required=True)
+    _ = parser.add_argument(
+        "--cases",
+        type=Path,
+        default=Path(__file__).with_name("model-control-cases.json"),
+    )
     _ = parser.add_argument("--responses", type=Path)
     _ = parser.add_argument(
         "--provenance-kind",

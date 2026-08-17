@@ -5,6 +5,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
+import sys
 from collections.abc import Callable
 from dataclasses import replace
 from pathlib import Path
@@ -120,6 +122,18 @@ CASE_IDS = (
 
 
 class ModelControlSchemaV2Tests(TestCase):
+    def test_direct_runner_entrypoint_uses_canonical_cases(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).with_name("run_model_controls.py"))],
+            cwd=Path(__file__).resolve().parents[1],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("PASS:", result.stdout)
+
     @override
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
