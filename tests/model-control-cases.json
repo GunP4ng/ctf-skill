@@ -1767,5 +1767,157 @@
       "result": null,
       "termination": null
     }
+  },
+  {
+    "id": "direct-discriminator-before-monolithic-solver",
+    "title": "A cheap observation can reject the expensive solver model",
+    "given": [
+      "One direct read or measurement costing one unit can falsify a prerequisite of the current hypothesis.",
+      "The proposed monolithic solver costs twenty units and assumes that prerequisite.",
+      "Twenty-one units remain and the direct discriminator has not run.",
+      "No candidate is currently reproduced."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "run_direct_discriminator",
+      "defer_monolithic_solver"
+    ],
+    "required_next_action": "run_direct_discriminator",
+    "prohibited_actions": [
+      "start_monolithic_solver",
+      "declare_solver_only_path"
+    ],
+    "required_state": {
+      "hypothesis.direct_discriminator_pending": true,
+      "intervention.selected_cost": 1,
+      "intervention.deferred_cost": 20
+    }
+  },
+  {
+    "id": "solver-timeout-encoding-same-fingerprint",
+    "title": "Equivalent solver encodings time out without new information",
+    "given": [
+      "Two solver encodings use the same source facts, target capability, predicted observation, prerequisites, and acceptance meaning.",
+      "Both executions reach their limits without a candidate, contradiction, bound, or newly visible property.",
+      "Changing solver backend or array encoding does not change the semantic fingerprint.",
+      "A third equivalent encoding is proposed."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "count_two_no_information_rounds",
+      "block_third_equivalent_solver",
+      "require_material_representation_pivot_or_closure"
+    ],
+    "required_next_action": "require_material_representation_pivot_or_closure",
+    "prohibited_actions": [
+      "run_third_equivalent_solver",
+      "reset_fingerprint_for_backend_change",
+      "claim_timeout_as_progress"
+    ],
+    "required_state": {
+      "semantic.no_information_rounds": 2,
+      "semantic.same_fingerprint_blocked": true,
+      "representation.new_property_visible": false
+    }
+  },
+  {
+    "id": "budget-stop-missing-accounting",
+    "title": "A budget-stop proposal omits its accounting record",
+    "given": [
+      "The model proposes terminal budget-stop.",
+      "The report names no budget unit, limit, used amount, or remaining amount.",
+      "No trusted harness event states that the active budget is exhausted.",
+      "The unresolved frontier otherwise permits a non-terminal status update."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_unaccounted_budget_stop",
+      "record_budget_unit_limit_used_remaining"
+    ],
+    "required_next_action": "record_budget_unit_limit_used_remaining",
+    "prohibited_actions": [
+      "terminal_budget_stop",
+      "infer_budget_exhaustion"
+    ],
+    "required_state": {
+      "budget.unit": null,
+      "budget.limit": null,
+      "budget.used": null,
+      "budget.remaining": null,
+      "termination": null
+    }
+  },
+  {
+    "id": "target-irrelevant-decode-not-progress",
+    "title": "A reproducible decode exposes only unrelated background traffic",
+    "given": [
+      "A transform reproducibly decodes valid packets from the artifact.",
+      "The packets belong to unrelated background traffic and expose no target field, target prerequisite, candidate, contradiction, or bound.",
+      "The active target hypothesis and its prerequisite coverage are unchanged.",
+      "The model proposes retaining the decode as target progress."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "preserve_decode_as_raw_observation",
+      "reject_target_progress_credit",
+      "pivot_or_close_current_representation"
+    ],
+    "required_next_action": "pivot_or_close_current_representation",
+    "prohibited_actions": [
+      "credit_unrelated_decode_as_target_progress",
+      "promote_partial_result_from_background_traffic"
+    ],
+    "required_state": {
+      "representation.reproducible": true,
+      "representation.target_relevant_delta": false,
+      "target.prerequisite_coverage_changed": false,
+      "result": null
+    }
+  },
+  {
+    "id": "uninspected-affordable-frontier-blocks-closure",
+    "title": "An affordable target-relevant frontier remains uninspected",
+    "given": [
+      "The current representation exposes one target-relevant next action within the remaining external budget.",
+      "That action has a distinct predicted observation and has not been attempted.",
+      "No authority event blocks the action.",
+      "The model proposes no-result plus completed."
+    ],
+    "evidence_refs": [
+      "given:1",
+      "given:2",
+      "given:3"
+    ],
+    "required_decisions": [
+      "reject_incomplete_frontier_closure",
+      "schedule_affordable_target_relevant_action"
+    ],
+    "required_next_action": "schedule_affordable_target_relevant_action",
+    "prohibited_actions": [
+      "terminal_no_result_completed",
+      "describe_uninspected_frontier_as_exhausted"
+    ],
+    "required_state": {
+      "frontier.affordable_action_count": 1,
+      "frontier.audit_complete": false,
+      "result": null,
+      "termination": null
+    }
   }
 ]

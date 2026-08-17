@@ -67,6 +67,11 @@ The executable matrix covers:
 | Durable raw output and idempotent recovery | `raw-evidence-before-reduction`, `inflight-recovery-no-reexecute` |
 | Trusted stop and safe receipt reuse | `trusted-stop-pauses-mutations`, `exact-receipt-reuse` |
 | Flexible bounded local reads | `bounded-read-batch-remains-flexible` |
+| Direct discriminator before monolithic solver | `direct-discriminator-before-monolithic-solver` |
+| Equivalent solver timeout fingerprint | `solver-timeout-encoding-same-fingerprint` |
+| Complete accounting before budget-stop | `budget-stop-missing-accounting` |
+| Target-relevant representation progress | `target-irrelevant-decode-not-progress` |
+| Affordable frontier blocks closure | `uninspected-affordable-frontier-blocks-closure` |
 
 ## Partial acceptance model rejected upstream
 

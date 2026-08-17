@@ -27,7 +27,7 @@ JsonObject: TypeAlias = dict[str, object]
 Mutation: TypeAlias = Callable[[JsonObject], object]
 
 CASES_PATH = Path(__file__).with_name("model-control-cases.json")
-SEMANTIC_SHA256 = "7288f50cb2a612d79123613bc5ea781c3830a8c54f5099ced49301361a9086f8"
+SEMANTIC_SHA256 = "78309f79d32a3cb67b8b7517d6e261a5f99546464ce04fbca5af9b83932ddd03"
 FAMILY_CASE_IDS = (
     "family-equal-prediction-grouping",
     "family-distinct-prediction-separation",
@@ -50,6 +50,13 @@ TRANSACTION_CASE_IDS = (
     "canonical-no-information-pivot-or-review",
     "user-supplied-mechanism-remains-assisted",
     "reproduced-candidate-latches-closure",
+)
+WEAK_TRAIT_CASE_IDS = (
+    "direct-discriminator-before-monolithic-solver",
+    "solver-timeout-encoding-same-fingerprint",
+    "budget-stop-missing-accounting",
+    "target-irrelevant-decode-not-progress",
+    "uninspected-affordable-frontier-blocks-closure",
 )
 CASE_IDS = (
     "partial-authoritative-rejection",
@@ -108,6 +115,7 @@ CASE_IDS = (
     *DISPOSITION_CASE_IDS,
     *REVIEW_CASE_IDS,
     *TRANSACTION_CASE_IDS,
+    *WEAK_TRAIT_CASE_IDS,
 )
 
 
@@ -381,13 +389,13 @@ class ModelControlSchemaV2Tests(TestCase):
         )
         self.assertTrue(grade(self.cases, unreplayed)[replay.case_id])
 
-    def test_preserves_the_pinned_67_case_semantics(self) -> None:
+    def test_preserves_the_pinned_72_case_semantics(self) -> None:
         raw_cases = cast(
             list[JsonObject],
             json.loads(CASES_PATH.read_text(encoding="utf-8")),
         )
         self.assertEqual(tuple(case.case_id for case in self.cases), CASE_IDS)
-        self.assertEqual(len(self.cases), 67)
+        self.assertEqual(len(self.cases), 72)
         semantic = [
             {
                 "id": case["id"],
@@ -403,7 +411,7 @@ class ModelControlSchemaV2Tests(TestCase):
             separators=(",", ":"),
         ).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(), SEMANTIC_SHA256)
-        self.assertEqual(len({case.case_id for case in self.cases}), 67)
+        self.assertEqual(len({case.case_id for case in self.cases}), 72)
 
     def test_loads_an_exact_synthetic_v2_bundle(self) -> None:
         self.assertEqual(self._load(self._bundle()), self.responses)

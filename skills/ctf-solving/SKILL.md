@@ -16,6 +16,11 @@ runtime surface, not by challenge title.
 - Preserve actual bytes and observations before reducing them to summaries.
 - Separate local models and surrogate behavior from authoritative acceptance.
 - Treat policy bookkeeping as coordination, never as technical progress.
+- Before emitting machine output, validate the exact schema:
+  `decision_ids` contains every required decision ID and, when `next_action_id`
+  is non-null, contains that exact string; `state` is a flat map whose required
+  keys are copied literally, including dots, and dotted keys are never expanded
+  into nested objects. Repair any mismatch before emission.
 
 ## 1) Target contract
 
@@ -96,7 +101,10 @@ mentions both.
 A material representation pivot requires referenced source evidence, a
 reproducible transform or model, observed output, and the newly visible property
 or decision change. Announcing a new identifier, tool, backend, or parameter is
-not representation progress.
+not representation progress. Credit progress only when that property changes
+target capability, prerequisite coverage, a candidate, contradiction, bound, or
+next decision. Preserve unrelated background decodes as raw observations, but
+do not promote them to target progress or `partial`.
 
 - group proposals that share one predicted observation under the same discriminator
   into one `family_id`, regardless of how many workers or labels produced them;
@@ -125,14 +133,19 @@ observations create distinct families.
 
 Before a costly solver, full-state search, or exploit build, name the cheapest
 feasible discriminator and its family-dependent signals. If bypassing it,
-record evidence showing why each cheaper separator cannot decide.
+record evidence showing why each cheaper separator cannot decide. When one
+affordable direct observation can falsify a solver prerequisite, run it before
+the solver; enough budget for both is not evidence to reverse that order.
 
 Record budget unit, limit, used, remaining, and provenance for every
 budget-consuming action. An action is proven affordable only when a credible
 upper bound fits; it is proven unaffordable only when a credible lower bound
 exceeds the remainder. Otherwise cost is unknown and needs a bounded audit.
 Reconcile after budget-consuming actions and before any terminal affordability
-decision. Never alter accounting merely to justify continuation or stopping.
+decision. `budget-stop` is unavailable until unit, limit, used, remaining, and
+provenance are all recorded. If any are absent, the next action is to record
+those fields, not merely request them and not stop. Never alter accounting
+merely to justify continuation or stopping.
 
 ## 4) Contradiction handling
 
@@ -250,7 +263,8 @@ label does not reset the count. If the harness returns
 Treat solver `unknown`, timeout, interruption, and backend error as the same
 no-information outcome when semantic subject, unresolved variables, and
 observable predicate are unchanged. Changing solver, backend, or parameters
-alone is not a pivot.
+alone is not a pivot. Do not credit an equivalent timeout as progress unless it
+produces a new candidate, contradiction, bound, or newly visible property.
 
 ## 6a) Bounded external review escalation
 
@@ -289,7 +303,8 @@ For discovery, representation pivot, active/reserve discrimination, and
 acceptance closure, name the cheapest supported action or `none`, its
 prerequisites, cost evidence, expected decision change, and reconciled budget.
 `none` must cover the current artifact and every supported candidate. Any
-affordable decision-changing action keeps the attempt live.
+affordable decision-changing action keeps the attempt live: select and schedule
+that action before proposing closure.
 
 ## 7) Results and terminations
 
@@ -319,7 +334,9 @@ freeze the terminal fields.
   pinned invocation and acceptance receipt instead.
 - `failed-with-valid-oracle` requires a valid oracle and bounded rejection
   evidence covering every remaining candidate.
-- `partial` requires a useful proven fact plus explicit absence of acceptance.
+- `partial` requires a target-relevant proven fact that changes capability,
+  prerequisite coverage, a candidate, contradiction, bound, or next decision,
+  plus explicit absence of acceptance.
 - `no-result` records why no useful fact was proven.
 
 Latch a reproducible exact candidate immediately. Once a root-owned verifier

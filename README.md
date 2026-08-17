@@ -227,9 +227,9 @@ ctf_attempt:
 
 ## 검증 결과
 
-2026-08-16 개정판은 다음 검사를 통과했습니다.
+2026-08-17 개정판은 다음 검사를 통과했습니다.
 
-- 정책 동작 시나리오 67건: `PASS: 67 model-control cases`
+- 정책 동작 시나리오 72건: `PASS: 72 model-control cases`
   - 필수 행동을 빠뜨리는 경우
   - 금지된 행동을 고르는 경우
   - 상태를 바꿔야 할 때 바꾸지 않는 경우
@@ -242,6 +242,10 @@ ctf_attempt:
   - 같은 semantic fingerprint를 반복하거나 재현된 candidate의 closure를 미루는 경우
   - solver `unknown`·timeout을 backend나 family 이름만 바꿔 반복하는 경우
   - 사용자 제공 exploit·solver를 독립 발견으로 잘못 귀속하는 경우
+  - 직접 관찰로 prerequisite를 반증할 수 있는데 monolithic solver를 먼저 실행하는 경우
+  - target과 무관한 background decode를 representation progress로 승격하는 경우
+  - unit/limit/used/remaining 없이 `budget-stop`을 제안하는 경우
+  - affordable target-relevant frontier를 남긴 채 closure를 제안하는 경우
 - prompt schema v3가 case별 상태 키/JSON scalar type, candidate action 집합,
   caller가 선택한 provenance를 공개하되 답안 값은 공개하지 않는지 확인하는 구조화 테스트
 - Ruff 코드 검사와 형식 검사
@@ -250,12 +254,12 @@ ctf_attempt:
 
 검증 대상 파일의 SHA-256:
 
-- 정책 (`skills/ctf-solving/SKILL.md`): `fdc46c9ce5246c987de7cec0083872c8b0f8490ab6fc27e1e5d930b6e431f2e7`
-- 검사 설명 (`tests/ctf-solving-model-controls.md`): `ce83abe9b73ed0afac78b8d1ec5226134337449c4fcb0c34d1c642663868a695`
+- 정책 (`skills/ctf-solving/SKILL.md`): `1d68501b007aaf0455e4b8e7ae8cc68d8420f9d6726e643127e8b7fd99779727`
+- 검사 설명 (`tests/ctf-solving-model-controls.md`): `7449c526e84da3d09cfb51d6046d2c2ca7f978f739a431d6d51116cf807063b8`
 - 실행기 (`tests/run_model_controls.py`): `fd49355653aa55167df6d544ea20043a295ab720bb97e781ba7b20a6041ba606`
 - typed grader (`tests/model_control_harness.py`): `cb197a5ed9377e18f6881a9e3cef068a02fa8d194f31e9cfe801feedaf4cf968`
-- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `a9bf717d0f8277cbae8baa5a58d1a27332d1caf2809fdfce35d36dddecef6fc9`
-- 검사 시나리오 (`tests/model-control-cases.json`): `8cecf8d2c8b6d517a19c83841ad33ef670c3b7d974aceb851a5933a6bc75a12d`
+- 구조화 contract 테스트 (`tests/test_model_control_harness.py`): `4f7ed051e1d59e84be360f0164ea7076a0588a79779aed3c7e936ece6c41d880`
+- 검사 시나리오 (`tests/model-control-cases.json`): `eda1d79641381f73542d41c375e661213ea59a2a9341789effe96f55b30a1d82`
 - 보관용 legacy 응답 기록 (`tests/fixtures/legacy/opus5-model-control-responses.v1.json`): `816c546101ff185ccdf270610b7caf4d1807e1ee4cc2f0f685c13b22379c85b9`
   - 검증되지 않은 schema v1 기록이며 현재 schema v2 response grader의 통과 증거로 사용하지 않습니다.
 
@@ -286,12 +290,11 @@ truth입니다. 가설, 반증, 후보 보존, surrogate 범위, budget, 모순,
 않습니다. 이 정책은 언제 준비를 허용하는지만 정하고, 전송 자체는 승인받은
 리뷰 스킬이 수행합니다.
 
-`oh-my-ctf`는 이 정책에서 자격을 갖춘(qualified) compact profile을
-파생해 패키징합니다. 이 profile은 원문 복사본이 아니라 OmO Native에서
-필요한 지시만 유지하고, Senpi TUI 활성화, session lifecycle, tool 권한,
-evidence 저장, sandbox, terminal authority는 OmCTF runtime과 integration
-test에 맡깁니다. `PROVENANCE.json`은 원본 정책과 case/grader, local
-profile, package manifest의 각 hash를 따로 고정하고 `COVERAGE.json`은
+`oh-my-ctf`는 이 정책을 byte-identical packaged skill로 import합니다.
+Senpi TUI 활성화, session lifecycle, tool 권한, evidence 저장, sandbox,
+terminal authority는 OmCTF runtime과 integration test에 맡깁니다.
+`PROVENANCE.json`은 원본 정책과 case/grader, packaged mirror, package
+manifest의 각 hash를 따로 고정하고 `COVERAGE.json`은
 각 model-control case의 profile/runtime 소유자를 기록합니다.
 
 동기화 순서는 다음과 같습니다.
