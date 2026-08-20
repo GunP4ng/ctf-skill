@@ -27,11 +27,13 @@ runtime surface, not by challenge title.
 Before an intervention, record these eight fields: (1) exact target and
 authorized scope, (2) required artifacts, (3) controllable input, (4) observable
 intermediate state, (5) local oracle, (6) discovery surface, (7) real acceptance
-surface, and (8) budget and stop condition. The discovery surface names the
-artifact, runtime, instrumentation, reconstruction, emulation, static analysis,
-or bounded acquisition path on which facts can still be proven. Acceptance
-unavailability affects closure only; it does not erase a reachable discovery
-surface.
+surface, and, only when a trusted authority declares one, (8) authoritative
+budget and stop condition. A trusted budget declaration identifies its unit,
+limit, and provenance from the user, organizer, or authoritative target. The
+discovery surface names the artifact, runtime, instrumentation, reconstruction,
+emulation, static analysis, or bounded acquisition path on which facts can still
+be proven. Acceptance unavailability affects closure only; it does not erase a
+reachable discovery surface.
 
 If a local oracle or reachable acceptance surface is unknown but
 evidence-derivable, choose one bounded discovery experiment before theorizing
@@ -137,15 +139,31 @@ record evidence showing why each cheaper separator cannot decide. When one
 affordable direct observation can falsify a solver prerequisite, run it before
 the solver; enough budget for both is not evidence to reverse that order.
 
-Record budget unit, limit, used, remaining, and provenance for every
-budget-consuming action. An action is proven affordable only when a credible
-upper bound fits; it is proven unaffordable only when a credible lower bound
-exceeds the remainder. Otherwise cost is unknown and needs a bounded audit.
-Reconcile after budget-consuming actions and before any terminal affordability
-decision. `budget-stop` is unavailable until unit, limit, used, remaining, and
-provenance are all recorded. If any are absent, the next action is to record
-those fields, not merely request them and not stop. Never alter accounting
-merely to justify continuation or stopping.
+Create an authoritative budget only when a trusted user, organizer, or
+authoritative target declaration supplies its unit, limit, and provenance.
+Record the declared unit, limit, used, remaining, and immutable provenance for
+every action charged to that budget. An action is proven affordable only when a
+credible upper bound fits the declared remainder; it is proven unaffordable only
+when a credible lower bound exceeds that remainder. Otherwise its cost is
+unknown and needs a bounded audit. Reconcile after a charged action and before
+a terminal affordability decision.
+
+Without that trusted declaration, omit budget state entirely and do not use
+`budget-stop`. A controller quota, evaluator resource cap, elapsed time,
+internal intervention count, agent estimate, or model-authored value is not
+budget authority. Cost evidence can still choose the smaller bounded action,
+but it cannot manufacture a budget remainder, an affordability conclusion, or a
+terminal stop. Never alter authoritative accounting merely to justify
+continuation or stopping.
+
+`budget-stop` is available only when the declared unit, limit, used, remaining,
+and provenance are present, trusted, and reconciled with `used == limit` and
+`remaining == 0`. Any response that asserts or infers budget exhaustion while
+terminalizing, stopping, or closing an attempt - through an action, a composite
+of actions, or a termination state - requires that same authoritative,
+reconciled record. If any condition is absent, keep the attempt live or use the
+actual non-budget termination reason; never request, infer, or synthesize a
+budget record merely to stop.
 
 ## 4) Contradiction handling
 
@@ -163,9 +181,13 @@ while unrelated contradictions remain recorded.
 ## 5) Delegation and side effects
 
 Give workers immutable, disjoint scopes: question, artifact, allowed tools,
-budget, output schema, and stop condition. The parent owns hypothesis
-promotion, canonical state changes, and closure. Worker prose is evidence input,
-not authority.
+output schema, and stop condition. Include an authoritative budget only when it
+is inherited unchanged from trusted user, organizer, or authoritative target
+evidence, including its unit, limit, used, remaining, and immutable provenance.
+Internal worker limits, controller quotas, evaluator caps, and parent scheduling
+limits remain hidden controller constraints: they are not budget authority and
+cannot authorize `budget-stop`. The parent owns hypothesis promotion, canonical
+state changes, and closure. Worker prose is evidence input, not authority.
 
 After each child wave, record one compact root disposition per child with five
 fields: `child_id`, the evidence reference it is judged on, the `family_id` it
@@ -275,16 +297,18 @@ and no prior review proposal remains untested. Difficulty, slowness, or an
 inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
 
-After one completed no-information deep round, protect a provenance-backed
-lower-bound budget floor for one review lifecycle, root replay, and
-authoritative acceptance before funding an unrestricted second deep round on
-the same fingerprint. Cap that second round to the budget above the floor while
-leaving a cheaper bounded discriminator eligible. A lower bound proves only
-that an action which would cross the floor knowingly makes the downstream path
-impossible; it does not prove the review path affordable, so use a credible
-upper bound when one is available. This reservation keeps review activation
-`withheld` until every activation precondition holds and never authorizes packet
-preparation, approval, or transmission.
+When an authoritative budget exists, after one completed no-information deep
+round protect a provenance-backed lower-bound floor for one review lifecycle,
+root replay, and authoritative acceptance before funding an unrestricted second
+deep round on the same fingerprint. Cap that second round to the declared
+remainder above the floor while leaving a cheaper bounded discriminator
+eligible. A lower bound proves only that an action which would cross the floor
+knowingly makes the downstream path impossible; it does not prove the review
+path affordable, so use a credible upper bound when one is available. This
+reservation keeps review activation `withheld` until every activation
+precondition holds and never authorizes packet preparation, approval, or
+transmission. Without authoritative budget authority, do not synthesize a
+review reserve or use it to stop; the review preconditions still govern.
 
 Once two same-fingerprint no-information rounds and all four activation
 conditions hold, settle and disposition every relevant child, then make
@@ -331,10 +355,12 @@ the stalled fingerprint.
 Before a non-`solved` terminal transition, record one compact frontier audit.
 For discovery, representation pivot, active/reserve discrimination, and
 acceptance closure, name the cheapest supported action or `none`, its
-prerequisites, cost evidence, expected decision change, and reconciled budget.
-`none` must cover the current artifact and every supported candidate. Any
-affordable decision-changing action keeps the attempt live: select and schedule
-that action before proposing closure.
+prerequisites, cost evidence, expected decision change, and authoritative
+budget accounting only when such a budget exists. `none` must cover the current
+artifact and every supported candidate. Any action affordable under an
+authoritative budget keeps the attempt live: select and schedule that action
+before proposing closure. Without one, do not describe an unbounded action as
+budget-affordable or budget-exhausted.
 
 ## 7) Results and terminations
 
@@ -342,6 +368,8 @@ Use one result and one termination.
 
 - Results: `solved`, `failed-with-valid-oracle`, `partial`, or `no-result`.
 - Terminations: `completed`, `blocked`, `interrupted`, or `budget-stop`.
+  `budget-stop` requires exhausted, reconciled authoritative budget accounting;
+  controller limits and absent budget authority never authorize it.
 - Legal pairs: `solved` only with `completed`;
   `failed-with-valid-oracle` with `completed` or `budget-stop`; `partial` or
   `no-result` with any termination.
@@ -404,8 +432,9 @@ emulation, static-analysis, or authoritative path can derive the needed fact.
 
 Maintain one compact canonical attempt containing target and authorization,
 artifact/environment identity, capabilities, active/reserve/retired families,
-unknowns, budget, evidence references, at most one next bounded intervention,
-nullable in-flight identity, and terminal fields.
+unknowns, optional authoritative budget state, evidence references, at most one
+next bounded intervention, nullable in-flight identity, and terminal fields. A
+budget key appears only for a trusted user, organizer, or target declaration.
 
 Acceptance-model, surrogate, candidate-set, fingerprint, revision, and
 contradiction records are optional and appear only when they affect a decision.
