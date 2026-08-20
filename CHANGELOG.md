@@ -15,5 +15,6 @@
 
 ### Removed
 
-- Removed the synthetic model-control evaluator machinery, including its test
-  harness, corpus, legacy fixture/cache data, and supporting documentation.
+- Removed the synthetic model-control evaluator machinery: its test harness,
+  corpus, and legacy fixture/cache data. Direct-evaluation and release
+  synchronization guidance remains.

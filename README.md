@@ -14,8 +14,19 @@
 3. 로컬 재현 뒤 실제 제출 또는 공식 검증 창구의 결과를 확인합니다.
 4. 확인된 산출물과 공식 결과를 바탕으로 풀이 과정을 평가합니다.
 
-로컬 대체물의 성공은 실제 정답이 아닙니다. 직접 풀이의 상세한 작업 규칙과
-종료 조건은 `skills/ctf-solving/SKILL.md`를 따릅니다.
+로컬 대체물의 성공은 실제 정답이 아닙니다. 풀이 중에는 organizer/reference
+solutions, expected flags/results, and official solution material을 solver context
+밖에 유지합니다. candidate sealing 뒤에만 authoritative validation을 수행합니다.
+직접 풀이의 상세한 작업 규칙과 종료 조건은 `skills/ctf-solving/SKILL.md`를
+따릅니다.
+
+## 출처와 동기화
+
+`ctf-skill`은 범용 CTF 풀이 정책의 source of truth이고, `oh-my-ctf`는
+`skills/ctf-solving/SKILL.md`를 byte-identical로 import합니다. `oh-my-ctf`
+runtime은 deterministic integration을 소유합니다. 각 producer release 뒤에는
+새 SKILL bytes 기준으로 consumer bundle, provenance, package-manifest hashes를
+refresh해야 합니다.
 
 ## 설치
 

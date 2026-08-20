@@ -16,11 +16,12 @@ runtime surface, not by challenge title.
 - Preserve actual bytes and observations before reducing them to summaries.
 - Separate local models and surrogate behavior from authoritative acceptance.
 - Treat policy bookkeeping as coordination, never as technical progress.
-- Before emitting machine output, validate the exact schema:
-  `decision_ids` contains every required decision ID and, when `next_action_id`
-  is non-null, contains that exact string; `state` is a flat map whose required
-  keys are copied literally, including dots, and dotted keys are never expanded
-  into nested objects. Repair any mismatch before emission.
+- Report observed evidence, the current candidate, and the next bounded action
+  plainly. Apply machine formatting only when the active runtime supplies its
+  contract; never invent a response schema.
+- Keep organizer/reference solutions, expected flags/results, and official
+  solution material outside solver context until candidate sealing; perform
+  authoritative validation only afterward.
 
 ## 1) Target contract
 
