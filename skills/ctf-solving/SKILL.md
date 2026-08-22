@@ -46,6 +46,14 @@ identities and require direct user, organizer, or authoritative target evidence
 for the replacement. A surrogate, guess, timeout, or local rejection cannot
 nominate a new target.
 
+After each decision-changing intervention and before closure, record one compact
+**Authority Closure Checkpoint**: the original target surface, local-oracle
+surface, real acceptance surface, current candidate or lossless candidate set,
+strongest evidence reference, capability just proven or ruled out, and the next
+authority edge. A primitive closes only the surface on which it was proven. If
+the next authority edge is still live, preserve it explicitly instead of
+treating a local read, write, crash, decode, or replay as end-to-end closure.
+
 Use `blocked` only when every decision-changing acquisition, reconstruction,
 rehosting, emulation, static-analysis, or acceptance action is unavailable or
 non-derivable. Record the boundary, proof, attempted or excluded action, unblock
@@ -108,6 +116,14 @@ not representation progress. Credit progress only when that property changes
 target capability, prerequisite coverage, a candidate, contradiction, bound, or
 next decision. Preserve unrelated background decodes as raw observations, but
 do not promote them to target progress or `partial`.
+
+After the first no-information result in an active family, test representation
+fitness before scaling or pivoting: name which target variable or boundary the
+current representation exposes, which discriminator can observe it, and what
+decision the observation would change. Prefer a smaller semantic probe at that
+boundary over another whole solver. Deepen the current family when such a probe
+exists; pivot only when referenced evidence shows the current representation
+cannot expose the needed property.
 
 - group proposals that share one predicted observation under the same discriminator
   into one `family_id`, regardless of how many workers or labels produced them;
@@ -205,6 +221,11 @@ its current eligibility. Only an `accepted` disposition may carry a non-`none`
 modeled state change. Child, external oracle, and external review output stays
 advisory until the root reproduces it.
 
+When multiple children return no decision-changing evidence, merge their shared
+blocked variables and observables into one root no-progress record before
+another wave. Sibling labels, prompts, or implementations do not create new
+families and do not reset the semantic no-information count.
+
 Use this exact child sequence:
 
 1. wait for or fetch the terminal child result;
@@ -217,6 +238,10 @@ Use this exact child sequence:
 If the harness reports an unresolved child, settle or cancel that exact child.
 If it reports a completed undispositioned child, classify the exact projected
 child/evidence pair. Never pair one child's output with another receipt.
+Before cancelling a lane, preserve one handoff artifact with `family_id`,
+representation identity, last evidence reference, unresolved question, and the
+next bounded discriminator or `none`. Cancellation without that handoff changes
+no modeled state.
 
 Serialize interventions whose stateful-resource boundaries intersect. Disjoint
 bounded reads or experiments may run concurrently when their outputs and
@@ -299,6 +324,11 @@ abort fires, the default conclusion is that the constraint model misencodes the
 target's semantics, not that the search needs more resources: re-derive the
 model from primitive behavior before scaling compute. Re-running the same model
 in more engines, wider budgets, or staged searches does not satisfy the pivot.
+Unless trusted target evidence or the user declares a different bound, use 180
+seconds as the default abort for a solver that produces no useful candidate,
+contradiction, bound, or newly visible property. Reaching that default is one
+no-information outcome, never evidence that the family is false or that more
+compute is the next authority edge.
 
 ## 6a) Bounded external review escalation
 

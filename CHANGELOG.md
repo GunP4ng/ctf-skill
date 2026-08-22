@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0] - 2026-08-22
+
+### Changed
+
+- Added a compact authority-closure checkpoint that preserves explicit target,
+  local-oracle, acceptance-surface, capability, evidence, and next-edge state.
+- Added first-no-information representation fitness/deepening guidance and a
+  default 180-second no-useful-progress solver abort.
+- Added no-progress child-wave merging and durable cancelled-lane handoff
+  artifacts while preserving the exact five-step child lifecycle sequence.
+
 ## [0.3.0] - 2026-08-20
 
 ### Changed
