@@ -1,74 +1,217 @@
 # ctf-skill
 
-`ctf-skill`은 승인된 교육용 CTF를 AI 에이전트와 함께 풀 때 사용하는 진행
-정책입니다. 배포 파일과 모델 동작의 유일한 정책 원본은
-`skills/ctf-solving/SKILL.md`입니다.
+`ctf-skill`은 AI agent가 승인된 교육용 CTF 문제를 풀 때 따라야 할 규칙을
+모아 둔 파일입니다. 여기서 AI agent는 AI 모델이 파일을 읽고 프로그램을
+실행하며 작업할 수 있게 만든 도구를 뜻합니다.
 
-## GPT-5.6 Sol의 반복 특성을 기반으로 한 개선
+CTF는 보안 문제를 풀어 정답 문자열인 flag를 찾는 대회입니다. flag는 보통
+대회 제출 페이지나 서버에 보내 정답인지 확인합니다.
 
-주요 control은 `openai-codex/gpt-5.6-sol`을 medium/high thinking으로 실제
-CTF에 반복 적용하며 관찰한 강점과 실패 양상에 대응해 보강했습니다.
+실제로 AI agent가 읽고 따르는 파일은 `skills/ctf-solving/SKILL.md`입니다.
+이 README는 그 규칙이 왜 생겼고 어떻게 동작하는지 쉽게 설명합니다.
 
-반복해서 확인된 강점은 정확한 target 고정, 서로 다른 가설의 초기 전개,
-국소적인 representation pivot, 그리고 authoritative acceptance가 없을 때
-`solved`를 주장하지 않는 태도였습니다. 반면 기술적으로 의미 있는 단서를
-찾고도 같은 semantic lane을 오래 반복하거나, root가 evidence와 child 결과를
-정산하지 못한 채 review와 terminal closure까지 연결하지 못하는 경향도
-지속적으로 나타났습니다.
+## GPT-5.6 Sol을 여러 번 사용하고 바꾼 점
 
-| 반복적으로 나타난 모델 특성 | 관찰된 실패 양상 | `ctf-skill`의 개선 |
-|---|---|---|
-| 초기에 target과 acceptance 경계를 잘 고정하지만 긴 풀이 뒤에는 현재 authority edge를 잃기 쉽습니다. | local crash, decode, replay, primitive를 얻고도 proven capability, acceptance gap, 다음 검증 단계를 하나의 closure로 연결하지 못했습니다. | 매 decision-changing intervention 뒤 원래 target, local oracle, 실제 acceptance surface, candidate, strongest evidence, proven capability, next authority edge를 **Authority Closure Checkpoint**에 보존합니다. |
-| 유망한 기술 lane을 깊게 파는 능력은 좋지만, 의미가 같은 실패를 도구·backend·prompt·parameter만 바꾸어 반복합니다. | solver `unknown`, timeout, child lane 교체가 새 정보처럼 취급되어 context와 실행 예산을 쓰고도 candidate, contradiction, bound, observable이 늘지 않았습니다. | modeled state, decomposition, unknown, observable predicate가 같은 결과를 하나의 no-information fingerprint로 묶습니다. 두 번 뒤에는 새 evidence, material representation pivot 또는 frontier audit 없이는 세 번째 equivalent intervention이나 terminal transition을 금지합니다. |
-| 손으로 유도한 모델을 빠르게 자동화하지만, primitive semantics 검증보다 큰 search를 먼저 신뢰하는 경우가 있습니다. | 한 CCE `.NET` 사례에서는 opcode 의미를 잘못 모델링한 채 여섯 solver가 장시간 실행됐습니다. operator가 3분간 silent한 solver를 중단하고 접근을 바꾸게 한 뒤에야 모델을 다시 대조해 오류를 찾아 해결했습니다. | 큰 solver·full-state search 전에 target 예측 2~3개를 byte 단위로 differential-test합니다. 유용한 결과가 없는 solver는 기본 180초에 중단하고, compute 확장보다 **모델 의미론의 오인코딩**을 먼저 의심해 primitive behavior부터 재유도합니다. |
-| 병렬 child로 탐색 폭을 넓히지만 root 통합은 상대적으로 약합니다. | 완료된 child를 다시 조회하거나, 실패한 child를 unresolved로 남기고, decision-changing claim을 root에서 재현·disposition하지 못했습니다. | 각 child를 exact evidence reference와 family에 결속해 root가 `accepted`, `rejected`, `pending`으로 disposition합니다. decision-changing 주장은 root 재현 전까지 advisory이며, 동일 no-progress wave는 하나로 합치고 취소 전 durable handoff를 남깁니다. |
-| 유용한 decode나 구조를 찾으면 이를 progress로 표현하려는 경향이 있습니다. | target decision을 바꾸지 않는 배경 decode, 새 label, 구현 변경이 material pivot 또는 `partial`로 과대평가될 수 있었습니다. | representation progress는 source evidence, 재현 가능한 transform, observed output, 새로 보이는 property가 capability·prerequisite coverage·candidate·contradiction·bound·next decision 중 하나를 바꿀 때만 인정합니다. |
-| controller 제한이나 자체 추정치를 풀이 예산처럼 해석해 종료 근거로 삼기도 합니다. | authoritative budget이 없는데도 `budget-stop` 또는 affordability 결론을 만들면서 아직 가능한 discriminator가 닫혔습니다. | budget은 user, organizer, authoritative target이 unit·limit·provenance를 선언한 경우에만 존재합니다. controller quota, elapsed time, evaluator cap, model estimate는 종료 authority가 될 수 없습니다. |
-| review 필요성을 말로는 인식하지만 실제 전환과 후속 replay가 누락됩니다. | 반복 stall 뒤에도 equivalent local lane을 계속하거나 review를 제안만 하고 packet lifecycle, root replay, acceptance로 이어가지 못했습니다. | 같은 fingerprint의 no-information round가 두 번 끝나고, justified discriminator와 viable material pivot이 없으며, 이전 review proposal도 미검증 상태로 남아 있지 않을 때 모든 관련 child를 먼저 정산합니다. 그 뒤 다음 equivalent 시도보다 `ctf-review`를 우선하며, 응답은 advisory로 유지하고 root replay와 실제 acceptance를 다시 요구합니다. |
-| unsupported solve를 피하는 규율은 비교적 강하지만, local success와 authoritative solve의 간극이 큽니다. | 실제 반복 평가에서는 유용한 partial evidence가 있어도 candidate, replay, authoritative acceptance, cleanup을 모두 갖춘 model-owned closure가 드물었습니다. | `partial`은 capability·prerequisite coverage·candidate·contradiction·bound·next decision을 바꾸는 target-relevant proven fact와 acceptance 부재를 요구합니다. `solved`는 authoritative acceptance와 가능한 경우 clean replayable mechanism을 요구하며, one-shot surface는 exact pinned invocation과 acceptance receipt를 보존합니다. root-owned verifier가 public format candidate를 만들고 두 번째 run이 재현하면 추가 탐색을 멈추고 replay, acceptance, cleanup, terminal proposal 순으로 closure를 완결합니다. |
+이 정책은 `openai-codex/gpt-5.6-sol`로 실제 CTF 문제를 여러 번 풀어 본
+기록을 바탕으로 다듬었습니다.
 
-이 개선은 **GPT-5.6 Sol 자체의 solve rate가 인과적으로 향상됐다는 주장**이
-아닙니다. 고정 4-domain 평가에서는 localized hypothesis·representation
-개선이 있었지만 accepted candidate는 0/4였습니다. 위 내용은 반복 관찰된
-모델 특성을 policy control로 변환한 설계 근거이며, 실제 모델 개선은 별도의
-명시적으로 승인된 controlled comparative evaluation과 authoritative
-acceptance로만 판단합니다.
+이 모델은 대체로 다음 일을 잘했습니다.
 
-이 절은 현재 정책의 설계 근거와 동작 개요입니다. 정확한 판단 순서, 필드,
-예외와 종료 조건은 항상 `skills/ctf-solving/SKILL.md`를 따릅니다.
+- 어떤 문제를 풀고 있는지 처음에 정확히 정리했습니다.
+- 한 가지 방법만 고집하지 않고 여러 가능성을 먼저 살펴봤습니다.
+- 공식 확인을 받지 못했을 때는 함부로 `solved`라고 말하지 않았습니다.
 
-## 직접 CTF 풀이로 평가
+하지만 비슷한 실수도 여러 번 나타났습니다. `ctf-skill`은 그 실수를 줄이기
+위해 다음 규칙을 추가했습니다.
 
-이 저장소는 미리 정한 응답을 비교하거나 점수화하는 평가 도구를 제공하지
-않습니다. 평가는 승인된 실제 CTF 대상에서 직접 수행합니다.
+### 1. 중간 결과를 얻어도 최종 목표를 잊지 않기
+
+모델은 프로그램이 오류로 갑자기 종료된 결과, 해독한 데이터, 내 컴퓨터에서
+다시 만든 결과처럼 쓸 만한 중간 결과를 얻은 뒤, 그 결과가 실제 정답
+확인까지 얼마나 이어지는지 놓치곤 했습니다.
+
+그래서 다음 판단을 바꾸는 실험이 끝날 때마다, 그리고 풀이를 끝내기 직전에
+다음 내용을 짧게 기록합니다.
+
+- 원래 풀려던 문제
+- 내 컴퓨터에서 확인할 방법
+- 실제 정답을 확인할 방법
+- 현재 답 후보 또는 아직 남은 모든 후보
+- 가장 강한 근거
+- 방금 새로 할 수 있게 된 일, 또는 불가능하다고 확인한 일
+- 다음에 확인할 한 가지
+
+중간 성공을 최종 성공으로 착각하지 않게 하기 위한 기록입니다.
+
+### 2. 같은 막힌 길을 도구만 바꿔 반복하지 않기
+
+같은 질문에 대해 자동 계산 프로그램, 실행 도구, 지시문, 실행 설정만 바꾸며
+비슷한 실패를 반복하는 일이 있었습니다. 이름이나 도구가 달라도,
+알아내려는 내용과 확인할 값이 같다면 같은 시도로 봅니다.
+
+같은 막힘이 두 번 나오면 세 번째 비슷한 시도를 바로 할 수 없습니다.
+새로운 근거를 찾거나, 기존 근거를 바탕으로 자료를 보는 방식을 실제로
+바꾸거나, 아직 남은 방법을 빠짐없이 다시 점검해야 합니다. 끝내겠다고
+판단할 때도 같은 점검이 필요합니다.
+
+여기서 "같은 막힘"은 같은 질문을 같은 값으로 확인하려 했지만 답을 얻지
+못한 경우를 뜻합니다. 단순히 프로그램 이름이나 설정만 바꾼 것은 새로운
+시도가 아닙니다.
+
+첫 번째 막힘이 나온 뒤에는 현재 자료가 알아내야 할 값을 실제로 보여 줄 수
+있는지 먼저 확인합니다. 가능하다면 전체 계산을 다시 돌리기보다 그 값만
+확인하는 작은 실험을 먼저 합니다.
+
+### 3. 큰 solver를 돌리기 전에 계산 방법부터 확인하기
+
+`solver`는 조건에 맞는 답을 자동으로 찾는 프로그램입니다. 한 실제 프로그램
+분석 문제에서는 명령 하나의 뜻을 잘못 이해한 채 여섯 solver가 오랫동안
+실행됐습니다. 운영자가 "3분 동안 아무 출력이 없는 solver는 중단하고 다른
+방법으로 바꾼다"는 규칙을 적용한 뒤에야 잘못된 계산을 찾아 문제를 풀 수
+있었습니다.
+
+이런 일을 줄이기 위해 큰 계산을 시작하기 전에 작은 입력 2~3개를 고릅니다.
+그 입력에서 모델이 예상한 출력과 실제 프로그램의 출력을 정확히 비교합니다.
+하나라도 다르면 계산 규모를 키우지 않고 계산 방법부터 다시 확인합니다.
+
+모든 solver는 실행 전에 중단 시간을 정합니다. 사용자나 실제 문제에서
+믿을 수 있는 다른 제한을 주지 않았다면 기본값은 180초입니다. 답 후보,
+기존 예상과 다른 결과, 가능한 값의 새 범위, 또는 새로 확인할 수 있게 된
+정보를 만들지 못하면 중단합니다.
+
+시간이 끝난 것은 한 번의 막힘일 뿐, 그 풀이 방법이 틀렸다는 증거는
+아닙니다. 이때 기본 판단은 "컴퓨터가 더 필요하다"가 아니라 "문제를
+잘못 옮겼을 수 있다"입니다.
+
+### 4. 여러 child agent의 결과를 root가 직접 정리하기
+
+`root agent`는 전체 풀이를 책임지는 주 agent이고, `child agent`는 나눠 받은
+작은 일을 처리하는 보조 agent입니다. 모델은 child agent에게 일을 나누는
+데는 능숙했지만, 끝난 child를 다시 조회하거나 실패한 child를 정리하지 않고
+남기는 경우가 있었습니다.
+
+이제 root agent는 child의 이름, 그 child가 만든 정확한 근거, 관련된 예상,
+아래 상태, 그리고 현재 판단이 바뀌었는지를 함께 기록합니다.
+
+- `accepted`: 근거를 확인했고 현재 판단을 바꿔도 됨
+- `rejected`: 근거가 부족하거나 재현되지 않음
+- `pending`: 아직 확인이 필요함
+
+중요한 주장은 가능하면 root가 다시 실행해 확인합니다. 여러 child가 같은
+막힘만 보고했다면 여러 개의 진전으로 세지 않고 하나의 실패 기록으로
+합칩니다. child를 취소할 때는 어디까지 했고 무엇이 남았는지도 기록합니다.
+현재 판단은 `accepted`일 때만 바꿀 수 있습니다. 이 정리가 끝나기 전에는
+새 child를 시작하거나 외부 검토를 요청하지 않습니다.
+
+### 5. 문제 풀이에 도움이 된 결과만 진전으로 세기
+
+새 파일을 만들거나, 데이터를 다른 형식으로 바꾸거나, 흥미로운 문자열을
+찾았다는 사실만으로는 진전이 아닙니다.
+
+새 결과가 실제로 확인된 사실이고, 할 수 있는 일, 필요한 조건, 답 후보,
+기존 예상의 모순, 가능한 값의 범위, 또는 다음 실험 중 하나를 실제로
+바꿨을 때만 진전으로 인정합니다.
+
+### 6. 시간과 token 제한을 공식 풀이 예산처럼 쓰지 않기
+
+모델이 스스로 예상한 시간이나 agent 실행 제한을 근거로
+"예산이 끝났다"고 판단한 적이 있었습니다.
+
+풀이 예산은 사용자, 대회 운영자, 또는 실제 대상이 단위, 전체 한도, 사용한
+양, 남은 양, 그리고 그 정보를 누가 정했는지 분명히 밝힌 경우에만
+존재합니다. 내부 실행 횟수, 지난 시간, 모델이 읽고 쓰는 양인 token의 제한,
+평가 도구의 제한은 문제를 끝낼 권한이 없습니다. token은 AI가 글을 읽고
+쓰기 위해 텍스트를 잘게 나눈 단위입니다.
+
+실제 시스템 제한 때문에 더 실행할 수 없다면 그 실행은 중단된 것으로
+기록합니다. 이를 대회가 정한 풀이 예산을 모두 쓴 것처럼 바꾸어 말하지
+않습니다. 예산 종료라고 쓰려면 사용한 양이 전체 한도와 같고 남은 양이
+0인지도 확인해야 합니다.
+
+### 7. 같은 막힘이 계속되면 외부 검토로 넘기기
+
+모델은 외부 검토가 필요하다고 말하면서도 실제 검토 요청과 재확인까지
+이어가지 못하는 경우가 있었습니다.
+
+같은 막힘이 두 번 끝났고, 현재 판단을 바꿀 수 있는 실험이 남아 있지 않고,
+기존 근거로 자료를 새롭게 볼 방법도 없으며, 아직 시험하지 않은 이전 검토
+제안도 없을 때 별도 검토 도구인 `ctf-review`를 사용합니다. 관련 child
+결과를 먼저 모두 정리한 뒤 검토를 요청합니다.
+
+`ctf-review`는 지금까지 모은 근거를 다른 모델이 새 관점에서 살펴보게 하는
+별도 도구입니다. 검토 답변은 힌트일 뿐 정답 증명이 아닙니다. root agent가
+직접 다시 실행하고 실제 정답 확인 방법까지 통과해야 합니다.
+
+### 8. `partial`과 `solved`를 분명히 나누기
+
+`partial`은 실제로 확인된 새 사실이 할 수 있는 일, 필요한 조건, 답 후보,
+기존 예상의 모순, 가능한 값의 범위, 또는 다음 실험을 바꿨지만 아직 정답
+확인은 받지 못한 상태입니다. `solved`는 실제 정답 확인 방법이 답을
+받아들였고, 가능하면 같은 풀이 과정을 깨끗하게 다시 실행할 수 있을 때만
+사용합니다.
+
+root agent가 관리하는 검사 프로그램이 정답 형식에 맞는 후보를 만들면
+같은 과정을 한 번 더 실행해 같은 후보가 나오는지 확인합니다. 재현되면
+후보를 안전하게 저장하고 불필요한 추가 분석을 멈춥니다. 그 뒤 풀이 과정을
+다시 실행하고 실제 정답 확인을 거친 다음, 임시 파일과 프로세스를 모두
+정리합니다. 한 번만 실행할 수 있는 문제라면 실행에 사용한 정확한 명령과
+정답으로 인정받은 결과를 대신 보존합니다.
+
+이 규칙이 생겼다고 해서 **GPT-5.6 Sol 자체의 문제 풀이 실력이 좋아졌다고
+증명된 것은 아닙니다.** Crypto, Pwn, Reverse, Web의 고정된 4개 문제
+평가에서는 일부 풀이 과정이 나아졌지만, 답 후보를 저장하거나 실제 정답으로
+확인한 결과는 0/4였습니다. 이 결과를 평가에서 뺀 Forensics나 Misc 분야까지
+일반화할 수는 없습니다. 이 문서는 관찰한 문제를 바탕으로 정책을 어떻게
+고쳤는지 설명합니다. 모델 자체가 좋아졌는지는 같은 문제와 조건으로 다시
+비교하고 실제 정답 확인 결과까지 봐야 판단할 수 있습니다.
+
+이 절은 이해를 돕기 위한 요약입니다. 정확한 규칙과 예외는 항상
+`skills/ctf-solving/SKILL.md`를 따릅니다.
+
+## 실제 CTF 문제로 평가하는 방법
+
+이 저장소는 미리 준비한 답변과 AI의 문장을 비교해 점수를 매기지 않습니다.
+승인받은 실제 CTF 문제를 직접 풀어 본 결과로 평가합니다.
 
 1. 실제 문제 파일, 서비스, 계정 범위, 또는 대회 환경을 대상으로 풀이합니다.
 2. 관찰한 원본 자료와 실행 결과를 보존합니다.
-3. 로컬 재현 뒤 실제 제출 또는 공식 검증 창구의 결과를 확인합니다.
+3. 내 컴퓨터에서 같은 결과가 나오는지 다시 확인한 뒤, 대회 제출 페이지나
+   서버의 결과를 확인합니다.
 4. 확인된 산출물과 공식 결과를 바탕으로 풀이 과정을 평가합니다.
 
-로컬 대체물의 성공은 실제 정답이 아닙니다. 풀이 중에는 organizer/reference
-solutions, expected flags/results, and official solution material을 solver context
-밖에 유지합니다. candidate sealing 뒤에만 authoritative validation을 수행합니다.
-직접 풀이의 상세한 작업 규칙과 종료 조건은 `skills/ctf-solving/SKILL.md`를
-따릅니다.
+내 컴퓨터에서 비슷하게 만든 환경이 성공했다고 해서 실제 정답은 아닙니다.
+AI가 답 후보를 만들기 전에는 공식 풀이, 예상 flag, 정답 파일을 보여 주지
+않습니다. 답 후보를 먼저 저장한 뒤에만 숨겨 둔 정답과 비교합니다. 이렇게
+해야 AI가 정답을 미리 보고 맞힌 것처럼 보이는 일을 막을 수 있습니다.
 
 ## 출처와 동기화
 
-`ctf-skill`은 범용 CTF 풀이 정책의 source of truth이고, `oh-my-ctf`는
-`skills/ctf-solving/SKILL.md`를 byte-identical로 import합니다. `oh-my-ctf`
-runtime은 deterministic integration을 소유합니다. 각 producer release 뒤에는
-새 SKILL bytes 기준으로 consumer bundle, provenance, package-manifest hashes를
-refresh해야 합니다.
+이 절은 저장소 유지관리자를 위한 설명입니다. 일반 사용자는 설치 절만
+따르면 됩니다.
+
+CTF 풀이 규칙의 원본은 이 저장소의 `skills/ctf-solving/SKILL.md`입니다.
+`oh-my-ctf`는 이 파일을 내용이 완전히 같도록 복사해 사용하고, 규칙을
+확실하게 지켜야 하는 부분을 프로그램으로 처리합니다.
+
+`SKILL.md`가 바뀌어 새 버전을 배포하면 유지관리자는 `oh-my-ctf` 안의 복사본과
+두 파일이 같은지 확인하는 값도 함께 갱신해야 합니다. README만 바뀌고
+`SKILL.md`가 그대로라면 풀이 규칙 자체는 바뀌지 않은 것입니다.
 
 ## 설치
 
-1. 저장소를 내려받습니다.
-2. `skills/ctf-solving/SKILL.md`를 사용하는 에이전트의 스킬 디렉터리 아래
-   `ctf-solving/SKILL.md`로 복사합니다.
+1. 터미널에서 저장소를 내려받습니다.
+
+   ```bash
+   git clone https://github.com/GunP4ng/ctf-skill.git
+   cd ctf-skill
+   ```
+
+2. `skills/ctf-solving/SKILL.md`를 사용하는 AI agent의 스킬 디렉터리 아래
+   `ctf-solving/SKILL.md`라는 이름으로 복사합니다.
 
 복사 대신 에이전트가 저장소의 파일을 직접 읽도록 설정해도 됩니다. 스킬
-디렉터리의 정확한 위치는 사용하는 에이전트 문서를 따르세요.
+디렉터리의 정확한 위치와 스킬을 켜는 방법은 사용하는 에이전트 문서를
+따르세요.
 
 ## 파일 구성
 

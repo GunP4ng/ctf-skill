@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.3] - 2026-08-22
+
+### Documentation
+
+- Rewrote the GPT-5.6 Sol improvement rationale in plain language for readers
+  who are new to the project and CTF-solving policy.
+- Replaced the terminology-heavy comparison table with short explanations of
+  each observed problem and the rule added to address it.
+
 ## [0.4.2] - 2026-08-22
 
 ### Documentation
