@@ -166,6 +166,11 @@ reconciled record. If any condition is absent, keep the attempt live or use the
 actual non-budget termination reason; never request, infer, or synthesize a
 budget record merely to stop.
 
+Before committing a large or staged search to a hand-derived model, execute two
+or three of its predictions directly against the target and compare outputs byte
+for byte. Any mismatch invalidates the model; fix the semantics first. A search
+over a falsified model produces only negative information at full cost.
+
 ## 4) Contradiction handling
 
 Preserve contradictions explicitly and scope each one to the claim it affects.
@@ -288,6 +293,12 @@ no-information outcome when semantic subject, unresolved variables, and
 observable predicate are unchanged. Changing solver, backend, or parameters
 alone is not a pivot. Do not credit an equivalent timeout as progress unless it
 produces a new candidate, contradiction, bound, or newly visible property.
+
+Give every solver invocation a hard wall-clock abort declared up front. When an
+abort fires, the default conclusion is that the constraint model misencodes the
+target's semantics, not that the search needs more resources: re-derive the
+model from primitive behavior before scaling compute. Re-running the same model
+in more engines, wider budgets, or staged searches does not satisfy the pivot.
 
 ## 6a) Bounded external review escalation
 
