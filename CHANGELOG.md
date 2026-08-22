@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1] - 2026-08-22
+
+### Documentation
+
+- Synchronized the README overview with the authority-closure,
+  no-information, solver-timebox, child-disposition, and truthful-result
+  policies shipped in v0.4.0.
+
 ## [0.4.0] - 2026-08-22
 
 ### Changed

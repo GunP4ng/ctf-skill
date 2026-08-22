@@ -4,6 +4,29 @@
 정책입니다. 배포 파일과 모델 동작의 유일한 정책 원본은
 `skills/ctf-solving/SKILL.md`입니다.
 
+## 현재 정책 핵심
+
+현재 정책은 많이 시도하는 것보다 **결정을 바꾸는 증거**를 만드는 데
+초점을 둡니다.
+
+- 원래 target, local oracle, 실제 acceptance surface, 확인된 capability와
+  다음 authority edge를 closure checkpoint에 보존합니다.
+- 손으로 만든 모델에 큰 search를 맡기기 전에 실제 target 예측 2~3개를
+  byte 단위로 대조합니다. 유용한 candidate, contradiction, bound 또는 새
+  observable이 없는 solver는 기본 180초 뒤 중단하고 모델 의미론부터
+  재검토합니다.
+- 동일한 modeled state, unknown, observable predicate를 반복한 결과는
+  같은 no-information fingerprint로 취급합니다. 도구, backend, prompt,
+  parameter만 바꾸는 것은 material representation pivot이 아닙니다.
+- child 결과는 root가 정확한 evidence를 disposition하고 재현하기 전까지
+  advisory입니다. 여러 child가 새 정보를 만들지 못하면 하나의 no-progress
+  기록으로 합치고, 취소한 lane은 durable handoff로 보존합니다.
+- `partial`과 `solved`는 각각 결정 변경 증거와 authoritative acceptance가
+  있을 때만 허용합니다.
+
+이 절은 현재 동작의 개요입니다. 정확한 판단 순서, 필드, 예외와 종료 조건은
+항상 `skills/ctf-solving/SKILL.md`를 따릅니다.
+
 ## 직접 CTF 풀이로 평가
 
 이 저장소는 미리 정한 응답을 비교하거나 점수화하는 평가 도구를 제공하지
@@ -41,6 +64,7 @@ refresh해야 합니다.
 
 ```text
 ctf-skill/
+├── CHANGELOG.md
 ├── README.md
 └── skills/
     └── ctf-solving/
