@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.2] - 2026-08-22
+
+### Documentation
+
+- Reframed the README around recurring GPT-5.6 Sol strengths and failure
+  patterns observed in real CTF evaluations.
+- Mapped those traits to the existing closure, no-information, solver
+  grounding, child-disposition, review, budget-authority, and terminal-result
+  controls without claiming causal solve-rate improvement.
+
 ## [0.4.1] - 2026-08-22
 
 ### Documentation
