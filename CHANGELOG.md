@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0] - 2026-08-24
+
+### Added
+
+- Added a concise operational kernel that prioritizes discovery, capability
+  bridging, authoritative acceptance, and cleanup.
+- Required a proven target-relevant capability to create closure debt that is
+  resolved before unrelated decision-changing work.
+- Required two independent root replays before candidate acceptance work is
+  latched, while preserving authoritative rejection evidence when discovery
+  reopens.
+- Elevated completed-child disposition to a root barrier before another worker
+  wave.
+
 ## [0.4.4] - 2026-08-23
 
 ### Fixed

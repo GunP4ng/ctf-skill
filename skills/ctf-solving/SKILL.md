@@ -23,6 +23,35 @@ runtime surface, not by challenge title.
   solution material outside solver context until candidate sealing; perform
   authoritative validation only afterward.
 
+## Operational kernel
+
+Keep one canonical next bounded action and advance the attempt through these
+operational phases:
+
+- **DISCOVERY** — pin the target, oracle, discovery surface, and acceptance
+  surface; use the cheapest discriminator to establish a target-relevant fact.
+- **BRIDGE** — convert a proven capability into the next replayable mechanism or
+  candidate. Freeze unrelated discovery until that authority edge is completed
+  or evidence falsifies it.
+- **ACCEPTANCE** — after two independent root replays reproduce one candidate,
+  stop solver and delegation work, preserve the candidate, and exercise the real
+  acceptance surface.
+- **CLEANUP** — settle children, mutations, processes, containers, credentials,
+  and temporary artifacts before freezing result and termination.
+
+A target-relevant capability creates closure debt: name its evidence and next
+authority edge, then resolve that edge before opening another decision-changing
+lane. A reproducible candidate latches acceptance work; an authoritative
+rejection returns it to the appropriate live frontier without discarding the
+rejection evidence.
+
+The root disposition barrier is absolute. After every child wave, settle and
+classify each completed child against its exact evidence before starting another
+wave. At every phase, report the strongest evidence reference, changed state,
+next bounded action, and next authority edge. Read-only exploration remains
+flexible, but bookkeeping, renamed lanes, and equivalent retries are not
+progress.
+
 ## 1) Target contract
 
 Before an intervention, record these eight fields: (1) exact target and
