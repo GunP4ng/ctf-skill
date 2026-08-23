@@ -462,6 +462,7 @@ settle cleanup before freezing the attempt.
   then remote acceptance.
 - **Reverse engineering** — map input to decision or state transition; distinguish
   static facts from runtime facts.
+  - Use Ghidra only headlessly (`analyzeHeadless` or pyghidra headless); never launch, wait on, drive, or use the headed Ghidra GUI, and fall back to IDA Python API xref queries when headless Ghidra cannot provide required cross-references.
 - **Web** — map source, routing, auth, parser, and session boundaries; preserve
   exact requests and responses.
 - **Misc** — infer the governing state machine from observed behavior and test

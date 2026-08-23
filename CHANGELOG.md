@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.4] - 2026-08-23
+
+### Fixed
+
+- Required Ghidra use to remain headless, prohibited the headed GUI, and
+  specified IDA Python API xref queries as the fallback when headless Ghidra
+  cannot provide the required cross-references.
+
 ## [0.4.3] - 2026-08-22
 
 ### Documentation
