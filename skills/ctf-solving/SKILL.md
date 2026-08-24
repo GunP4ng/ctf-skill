@@ -322,6 +322,18 @@ exploration. Follow a safe machine `requiredAction` exactly once:
 - `call_ctf_attempt_status`: refresh canonical state, then repair only the
   rejected phase.
 
+Control-plane failures and semantic no-information are disjoint. A rejection
+before the target call executes changes no family fingerprint, representation,
+candidate, or no-information count. Preserve its exact code and blocker, then
+use this bounded recovery loop:
+
+1. read the blocker and its machine-supplied next action;
+2. execute only that repair once, without rerunning the target call;
+3. if the same blocker repeats unchanged, preserve the pending receipt or
+   resource identity and refresh status once instead of opening another lane;
+4. classify semantic progress only after the target call actually executed and
+   its exact receipt was settled.
+
 Do not infer hidden validator facts from a generic rejection.
 
 Before an intervention, declare its expected discriminator, bounded cost,
@@ -391,6 +403,10 @@ When the canonical control surface requires external review after those
 preconditions hold, activate `ctf-review` to verify the external environment
 and prepare one exact immutable packet. Do not run another equivalent
 intervention first.
+
+When the active runtime exposes `ctf_review_check_env`, invoke that typed tool
+directly for the initial environment check. Do not route the packaged bridge's
+`--check-env` through bash, eval, or a reconstructed shell command.
 
 External-write authority has exactly two explicit modes. If the current
 conversation contains a user instruction to automatically submit bounded

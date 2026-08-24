@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.1] - 2026-08-24
+
+### Fixed
+
+- Separated control-plane rejection recovery from semantic no-information so
+  blocked tool calls do not consume semantic pivots or reopen broad discovery.
+- Added one bounded blocker-repair loop that preserves exact pending receipts
+  and resource identities without rerunning the target action.
+- Routed ctf-review environment readiness through the typed native harness
+  tool when that surface is available.
+
 ## [0.5.0] - 2026-08-24
 
 ### Added
