@@ -250,6 +250,14 @@ its current eligibility. Only an `accepted` disposition may carry a non-`none`
 modeled state change. Child, external oracle, and external review output stays
 advisory until the root reproduces it.
 
+**Child lease.** Each semantic frontier owns at most one unresolved child lease.
+Before opening another child on that frontier, the root must read the exact
+receipt, replay decisive observations when required, retain or discard it, and
+close or explicitly transfer the lease. A pending, missing, or guessed receipt
+never authorizes a second lease on that frontier. Independent frontiers may run
+parallel children. A transferred lease names its recipient and unresolved
+question; an unclosed lease remains owned by its original frontier.
+
 When multiple children return no decision-changing evidence, merge their shared
 blocked variables and observables into one root no-progress record before
 another wave. Sibling labels, prompts, or implementations do not create new
@@ -297,6 +305,29 @@ Use this loop:
 5. **Settle** — retain raw output, record the actual outcome, then update state.
 6. **Close** — replay when feasible and use the real acceptance surface.
 
+**Decision Compression.** After every decision-changing result, before any next
+action, internally refresh exactly these four lines:
+`Current frontier`
+`Last semantic result`
+`Cheapest unresolved discriminator`
+`Exact next action`
+This is state control, not a new research thread or progress result. Each
+refresh names one frontier and one exact action; a menu or bundle is not exact.
+Do not open a new family, child, research thread, or representation until that
+exact next action has executed to a semantic outcome or been proven impossible.
+If it becomes impossible, record the proof and refresh these four lines before
+selecting closure or another frontier.
+
+**Final-mile freeze.** When one capability is runtime-proven and one concrete
+execution remains whose success yields a candidate or decisive rejection, do
+that edge next. Runtime-proven requires an observed target-runtime receipt, not
+an inference from a local model or a control-plane success. The remaining
+execution must be named as the next bounded action. Further discovery, new
+children, extra research, new wrappers, re-implementations of the same bridge
+in another tool or language, and relabeled pivots earn zero progress credit.
+Resume discovery only after the edge yields its candidate, decisive rejection,
+or proof of impossibility and the frontier is refreshed.
+
 When native CTF controls are active, every decision-changing intervention is a
 four-phase transaction:
 
@@ -335,6 +366,15 @@ use this bounded recovery loop:
    its exact receipt was settled.
 
 Do not infer hidden validator facts from a generic rejection.
+
+**One-repair rule.** A control-plane rejection permits exactly one repair using
+the returned recovery action. The repair may address only the rejected phase
+and must not rerun the target call. Otherwise leave the control lane and continue
+only with an orthogonal target-semantic experiment or closure steps. Renaming
+families or representations, repackaging the same command through another tool
+or child, and repeating unchanged status reads are not progress. Settle the
+repair's exact receipt and classify it; a second control repair is forbidden
+even when status remains stale.
 
 Before an intervention, declare its expected discriminator, bounded cost,
 stateful-resource boundary, display ceiling, and durable raw-output destination.
@@ -379,6 +419,19 @@ discriminator remains pending, no viable material representation pivot remains,
 and no prior review proposal remains untested. Difficulty, slowness, or an
 inconclusive round alone is not a precondition. If any precondition fails,
 continue the cheapest local discriminator instead.
+
+| Not a semantic no-information round | Semantic no-information round |
+|---|---|
+| mediator/preflight/schema rejection | target executed and predicate observed no distinction |
+| missing path/directory failure | solver returned the same-fingerprint `unknown` twice |
+| timeout before target execution | |
+| output-visibility failure | |
+
+Immediately before requesting review, quote both rounds' exact receipts and the
+identical fingerprint. The quoted receipts must show target execution and the
+same semantic predicate; cite the fingerprint beside each receipt. A review
+request without those quotations and the matching fingerprint is premature. Do
+not count either column's left-hand failures toward review eligibility.
 
 When an authoritative budget exists, after one completed no-information deep
 round protect a provenance-backed lower-bound floor for one review lifecycle,
@@ -450,6 +503,13 @@ before proposing closure. Without one, do not describe an unbounded action as
 budget-affordable or budget-exhausted.
 
 ## 7) Results and terminations
+
+**No-prose-before-state.** Do not emit closure language such as `done`, `final`,
+or `I will stop` until candidate, terminal, child-disposition, or cleanup state
+has actually changed through tool actions. A planned transition, prose-only
+receipt, or claimed intention does not satisfy this gate. Describe the changed
+state only after the action receipt is retained in canonical state. Tool actions
+must precede both closure wording and the terminal proposal.
 
 Use one result and one termination.
 
