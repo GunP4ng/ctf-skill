@@ -65,6 +65,22 @@ emulation, static analysis, or bounded acquisition path on which facts can still
 be proven. Acceptance unavailability affects closure only; it does not erase a
 reachable discovery surface.
 
+Before a multi-round remote interaction, materialize one execution-boundary
+card from observed target behavior:
+
+```text
+process/service lifetime:
+estimated round trips and elapsed cost:
+projected timeout risk:
+pipeline-safe input-independent steps:
+boundary-wait steps that consume binary or stateful input:
+```
+
+If lifetime is unknown, measure it on a fresh connection before funding the
+full exploit. Pipeline only input-independent protocol groups; continue to wait
+at every boundary where a short read, binary payload, parser state, or response
+changes the next input.
+
 If a local oracle or reachable acceptance surface is unknown but
 evidence-derivable, choose one bounded discovery experiment before theorizing
 or blocking. A planning-only request may name the experiment but must not claim
@@ -394,6 +410,20 @@ tool, engine, prompt, parameter, implementation, intervention ID, or predicate
 label does not reset the count. If the harness returns
 `material_pivot_or_review`, do not rename and retry the same lane.
 
+At the second no-information result, publish one soft warning before another
+ordinary action:
+
+```text
+same semantic family and repetition count:
+new capability/candidate/bound: none
+unused observed source surfaces:
+cheapest material alternative:
+```
+
+The warning never blocks read-only work or a genuinely changed experiment.
+Hard refusal remains reserved for narrow authority, duplicate external-write,
+terminal, and lifecycle invariants.
+
 Treat solver `unknown`, timeout, interruption, and backend error as the same
 no-information outcome when semantic subject, unresolved variables, and
 observable predicate are unchanged. Changing solver, backend, or parameters
@@ -563,8 +593,12 @@ settle cleanup before freezing the attempt.
   solving.
 - **Forensics** — preserve originals; inspect metadata, structure, carving, and
   timeline before interpretation.
-- **Pwn** — establish mitigations, crash control, primitive, clean local replay,
-  then remote acceptance.
+- **Pwn** — establish mitigations, crash control, primitive, then require one
+  integration receipt before crediting local RCE: exact challenge wrapper,
+  debugger-free execution, no `/proc` or hidden local addresses, a fresh
+  process, and the same solver emitting a flag-shaped result. Measure the
+  authoritative process lifetime and compare it with round-trip cost before
+  remote execution; then use the unchanged solver for remote acceptance.
 - **Reverse engineering** — map input to decision or state transition; distinguish
   static facts from runtime facts.
   - Use Ghidra only headlessly (`analyzeHeadless` or pyghidra headless); never launch, wait on, drive, or use the headed Ghidra GUI, and fall back to IDA Python API xref queries when headless Ghidra cannot provide required cross-references.

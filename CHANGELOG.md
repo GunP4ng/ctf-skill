@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0] - 2026-08-29
+
+### Added
+
+- Added an execution-boundary card for authoritative service lifetime,
+  estimated round trips, timeout risk, pipeline-safe steps, and boundary waits.
+- Added a soft second-no-information warning that names repetition count,
+  absent capability/candidate/bound changes, unused source surfaces, and the
+  cheapest material alternative.
+- Added a Pwn integration receipt requiring exact-wrapper, debugger-free,
+  `/proc`-free, fresh-process replay with the same flag-emitting solver.
+
 ## [0.5.1] - 2026-08-24
 
 ### Fixed
