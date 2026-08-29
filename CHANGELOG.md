@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1] - 2026-08-30
+
+### Documentation
+
+- Synchronized the README with the v0.6.0 execution-boundary card, soft
+  second-no-information warning, and exact-wrapper Pwn replay requirements.
+- Kept the canonical `skills/ctf-solving/SKILL.md` bytes unchanged.
+
 ## [0.6.0] - 2026-08-29
 
 ### Added
