@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.1] - 2026-08-30
+
+### Documentation
+
+- Rewrote the README for first-time readers and explained how the four
+  model-owned checkpoints respond to observed GPT-5.6 Sol strengths, failure
+  patterns, and causal-evaluation limits.
+- Kept the machine-consumed `skills/ctf-solving/SKILL.md` unchanged.
+
 ## [0.7.0] - 2026-08-30
 
 ### Changed
