@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.2] - 2026-08-30
+
+### Documentation
+
+- Rewrote the README around observed GPT-5.6 Sol strengths and failure
+  patterns, showing how each model-owned checkpoint improves target selection,
+  decision-changing actions, mechanism synthesis, attribution, acceptance, and
+  cleanup.
+- Kept the machine-consumed `skills/ctf-solving/SKILL.md` unchanged.
+
 ## [0.7.1] - 2026-08-30
 
 ### Documentation
