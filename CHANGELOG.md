@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.0] - 2026-08-30
+
+### Changed
+
+- Replaced the duplicated operational phase, hypothesis-family, quota,
+  no-information, and closure ceremony with four model-owned checkpoints:
+  `target`, `action`, `result`, and `finish`.
+- Added the ordered machine-consumed `checkpoint_contract` frontmatter to the
+  canonical CTF-solving skill.
+- Kept trusted target and budget boundaries, hidden official-solution material,
+  unknown mutation recovery, exact external-write authority, truthful results,
+  organizer acceptance, assisted attribution, cleanup, headless Ghidra, and
+  artifact-led domain routing within the concise checkpoint policy.
+
 ## [0.6.1] - 2026-08-30
 
 ### Documentation
@@ -68,9 +82,9 @@
 
 - Reframed the README around recurring GPT-5.6 Sol strengths and failure
   patterns observed in real CTF evaluations.
-- Mapped those traits to the existing closure, no-information, solver
-  grounding, child-disposition, review, budget-authority, and terminal-result
-  controls without claiming causal solve-rate improvement.
+- Mapped those traits to the existing closure, no-information, solver-timebox,
+  child-disposition, review, budget-authority, and terminal-result controls
+  without claiming causal solve-rate improvement.
 
 ## [0.4.1] - 2026-08-22
 
