@@ -209,7 +209,7 @@ Ghidra는 `analyzeHeadless` 또는 pyghidra headless로만 사용합니다.
 ```bash
 git clone https://github.com/GunP4ng/ctf-skill.git
 cd ctf-skill
-git checkout --detach v0.7.2
+git checkout --detach v0.7.3
 ```
 
 사용하는 AI agent가 읽는 skill 경로에 다음 파일을 등록합니다.
@@ -236,7 +236,7 @@ challenge, hidden official-reference boundary, exact model과 thinking level,
 
 ## 버전과 범위
 
-현재 release는 `ctf-skill v0.7.2`입니다.
+현재 release는 `ctf-skill v0.7.3`입니다.
 
 승인된 교육용 CTF에서만 사용하세요. 운영자가 정한 target, account, time,
 submission 범위를 지켜야 합니다.

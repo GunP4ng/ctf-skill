@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-08-31
+
 ### Documentation
 
 - Tightened the canonical Result policy so it keeps exactly one authority edge,
