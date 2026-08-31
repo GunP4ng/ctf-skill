@@ -97,10 +97,11 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   useful evidence but are not organizer acceptance. Do not infer uniqueness
   without an injectivity or single-preimage proof.
 - Keep exactly one current critical authority edge in view, and make the next
-  action a bounded discriminator that directly reduces that edge. After the next
-  retained result, state whether capability, candidate, bound, or edge changed;
-  otherwise state that there was no new information. Retain the evidence, the
-  excluded branch, and the unblock condition.
+  action a bounded discriminator with explicit positive and negative outcomes
+  that directly reduces that edge. After the next retained result, state whether
+  capability, candidate, bound, or edge changed; otherwise state that there was
+  no new information. Retain the evidence, the excluded branch, and the unblock
+  condition.
 - State one truthful result: `solved`, `failed-with-valid-oracle`, `partial`, or
   `no-result`. `solved` requires organizer acceptance and a replayable mechanism
   when feasible (or the exact pinned one-shot invocation and acceptance receipt).
