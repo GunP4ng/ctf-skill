@@ -90,17 +90,17 @@ Route from observed artifacts or runtime behavior, not the challenge title:
 
 ## Result
 
-- Record the strongest evidence, what it establishes, the current candidate or
-  lossless candidate set, and the next authority edge. Local models, emulators,
-  patched binaries, and reconstructed predicates are useful evidence but are not
-  organizer acceptance. Do not infer uniqueness without an injectivity or
-  single-preimage proof.
-- Seal a concrete candidate when a root-owned verifier emits the public format
-  and a second independent root replay reproduces it. Then stop unrelated
-  diagnostics and exercise the real organizer acceptance surface. Preserve an
-  authoritative rejection as evidence and return only to the affected live
-  question; timeout, error, ambiguity, or unavailable acceptance remains
-  unknown rather than rejection.
+- Record the strongest evidence, the exact retained target-relevant fact, the
+  pinned surface or observable that produced it, and what it establishes. Keep
+  the current candidate or lossless candidate set and the next authority edge.
+  Local models, emulators, patched binaries, and reconstructed predicates are
+  useful evidence but are not organizer acceptance. Do not infer uniqueness
+  without an injectivity or single-preimage proof.
+- Keep exactly one current critical authority edge in view, and make the next
+  action a bounded discriminator that directly reduces that edge. After the next
+  retained result, state whether capability, candidate, bound, or edge changed;
+  otherwise state that there was no new information. Retain the evidence, the
+  excluded branch, and the unblock condition.
 - State one truthful result: `solved`, `failed-with-valid-oracle`, `partial`, or
   `no-result`. `solved` requires organizer acceptance and a replayable mechanism
   when feasible (or the exact pinned one-shot invocation and acceptance receipt).
@@ -111,7 +111,8 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   user or external contribution and its role. A supplied mechanism, exploit
   chain, solver, or candidate keeps the result assisted unless a sealed replay
   rederives it from pre-contribution evidence; an endpoint, rejection,
-  prioritization, or cancellation alone does not.
+  prioritization, or cancellation alone does not. This is a reasoning policy, not
+  a claim about model weights or causal solve-rate improvement.
 
 ## Finish
 

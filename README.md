@@ -121,17 +121,21 @@ Finish: fresh wrapper replay, organizer acceptance, process cleanup 확인
 실험 뒤에는 다음을 함께 기록합니다.
 
 - strongest evidence
+- exact retained target-relevant fact
+- pinned surface 또는 observable
 - evidence가 실제로 증명하는 사실
 - 현재 candidate 또는 lossless candidate set
-- 확보한 primitive
-- 아직 빠진 mechanism edge
-- 다음 acceptance 또는 authority 단계
+- 아직 남은 one critical authority edge
+- 다음 bounded action과 positive/negative discriminator
+- 그 다음 retained result에서 capability, candidate, bound, edge 변화 여부
+  또는 no-information
 
 Child나 사용자가 제공한 mechanism, exploit, solver, candidate는 출처를
 남깁니다. 핵심 외부 기여가 있었다면 결과는 `assisted`입니다.
 
 Local emulator나 patched binary의 성공은 중요한 evidence지만 organizer
-acceptance는 아닙니다.
+acceptance는 아닙니다. 이 결과 규칙은 모델 가중치 변경이나 causal solve-rate
+개선 주장이 아니라 checkpoint reasoning policy입니다.
 
 최종 결과는 다음 중 하나만 사용합니다.
 

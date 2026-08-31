@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Documentation
+
+- Tightened the canonical Result policy so it keeps exactly one authority edge,
+  one bounded next action, and the retrospective capability/candidate/bound/edge
+  update without adding a fifth checkpoint.
+- Clarified that the Result rule is a reasoning policy, not a model-weight or
+  causal solve-rate claim.
+
 ## [0.7.2] - 2026-08-30
 
 ### Documentation
