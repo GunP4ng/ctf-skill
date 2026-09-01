@@ -41,9 +41,18 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   before bounded solving.
 - **Forensics:** preserve originals; inspect metadata, structure, carving, and
   timeline before interpretation.
-- **Pwn:** establish mitigations, crash control, and a primitive; before crediting
-  local RCE, reproduce it with the exact wrapper, a fresh debugger-free process,
-  no `/proc` or hidden local addresses, and the same flag-emitting solver.
+- **Pwn:** establish mitigations and crash control, then seek a primitive. Treat
+  a capability that depends on debugger state, host-only `/proc`, out-of-band
+  container inspection, a patched target, or hidden or injected state as
+  diagnostic evidence, not yet a portable primitive. After the first such signal
+  and before expanding the exploit, run the cheapest bounded reproducer against
+  the pinned original artifact with the exact wrapper, a fresh debugger-free
+  process, and no such dependency. If it fails, reject only the portability claim
+  and retain independently established target facts. Once it passes and a
+  candidate exists, make integration into the flag-emitting solver the current
+  critical authority edge and suspend unrelated discovery until that edge is
+  resolved or portability is invalidated. Before crediting local RCE, replay the
+  completed solver under the same conditions.
 - **Reverse engineering:** map input to a decision or state transition and keep
   static facts separate from runtime facts. Use Ghidra only headlessly through
   `analyzeHeadless` or pyghidra headless; never launch or drive its GUI. Use IDA

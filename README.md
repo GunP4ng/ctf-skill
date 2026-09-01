@@ -26,6 +26,7 @@ GPT-5.6 Sol은 CTF에서 강한 도구 사용자입니다. 하지만 도구를 �
 | 흥미로운 초기 가설이나 decoy에 오래 머무름 | 값비싼 분석이 실제 정답과 멀어질 수 있음 |
 | 새 정보가 없는 실험을 이름만 바꿔 반복함 | 시간이 늘어도 frontier가 줄지 않음 |
 | 여러 primitive를 찾고도 하나의 mechanism으로 연결하지 못함 | 부분 성과는 많지만 flag까지 가지 못함 |
+| debugger·host 상태로 얻은 성공을 portable primitive로 봄 | full exploit 뒤 remote에서 무너짐 |
 | child, 사용자, 외부 자료의 기여를 혼합함 | evidence와 attribution이 부정확해짐 |
 | local success를 실제 acceptance처럼 해석함 | 검증되지 않은 candidate를 solved로 오인함 |
 | candidate 뒤 acceptance와 cleanup을 빠뜨림 | 정답을 찾고도 완결된 solve가 되지 않음 |
@@ -68,8 +69,10 @@ crash 발견
 ```text
 Target: exact binary, wrapper, remote acceptance를 고정
 Action: crash가 RIP control인지 구분하는 최소 입력 실행
-Result: primitive와 아직 빠진 exploit edge를 분리
-Finish: fresh wrapper replay, organizer acceptance, process cleanup 확인
+Result: debugger 신호와 portable primitive를 분리
+Action: 같은 최소 reproducer를 pinned original과 exact wrapper에서 검증
+Result: portable primitive를 하나의 flag-emitting candidate로 연결
+Finish: completed solver replay, organizer acceptance, process cleanup 확인
 ```
 
 두 번째 흐름은 도구 사용을 줄이기 위한 것이 아닙니다. **도구 결과가 다음
@@ -136,6 +139,22 @@ Child나 사용자가 제공한 mechanism, exploit, solver, candidate는 출처�
 Local emulator나 patched binary의 성공은 중요한 evidence지만 organizer
 acceptance는 아닙니다. 이 결과 규칙은 모델 가중치 변경이나 causal solve-rate
 개선 주장이 아니라 checkpoint reasoning policy입니다.
+
+Pwn에서는 debugger, host-only `/proc`, container inspection, patched target,
+hidden state에 의존하는 capability를 아직 portable primitive로 부르지
+않습니다. 먼저 pinned original artifact와 exact wrapper에서 가장 작은
+debugger-free reproducer를 실행합니다.
+
+```text
+local diagnostic signal
+-> dependency-free bounded reproducer
+-> portable primitive
+-> flag-emitting solver integration
+```
+
+재현이 실패하면 portability claim만 거절하고, 별도로 증명된 target fact는
+보존합니다. 재현이 통과하고 candidate가 생기면 unrelated discovery보다
+flag-emitting solver integration을 우선합니다.
 
 최종 결과는 다음 중 하나만 사용합니다.
 
@@ -209,7 +228,7 @@ Ghidra는 `analyzeHeadless` 또는 pyghidra headless로만 사용합니다.
 ```bash
 git clone https://github.com/GunP4ng/ctf-skill.git
 cd ctf-skill
-git checkout --detach v0.7.3
+git checkout --detach v0.7.4
 ```
 
 사용하는 AI agent가 읽는 skill 경로에 다음 파일을 등록합니다.
@@ -236,7 +255,7 @@ challenge, hidden official-reference boundary, exact model과 thinking level,
 
 ## 버전과 범위
 
-현재 release는 `ctf-skill v0.7.3`입니다.
+현재 release는 `ctf-skill v0.7.4`입니다.
 
 승인된 교육용 CTF에서만 사용하세요. 운영자가 정한 target, account, time,
 submission 범위를 지켜야 합니다.

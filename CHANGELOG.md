@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.7.4] - 2026-09-01
+
+### Changed
+
+- Tightened the Pwn route so environment-dependent local signals trigger the
+  cheapest dependency-free exact-wrapper reproducer before exploit expansion,
+  preserve independently established target facts on rejection, and prioritize
+  flag-emitting solver integration only after portability and candidacy exist.
+
 ## [0.7.3] - 2026-08-31
 
 ### Documentation
