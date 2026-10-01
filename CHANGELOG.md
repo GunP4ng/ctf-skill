@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-10-01
+
+### Fixed
+
+- Corrected v0.8.0 guidance so a solver abort prompts a semantic audit without
+  proving a model error. Replaced a fixed control-repair limit with
+  evidence-changing retries and retained supported alternative actions.
+- Clarified observation versus inference, exact child/advisory attribution,
+  personally replayed claims, and independent acceptance receipts.
+- Added explicit evidence and resource/authority escape clauses for the next
+  discriminator and closure, without adding runtime gates.
+
 ## [0.8.0] - 2026-10-01
 
 ### Added

@@ -121,6 +121,11 @@ Finish: completed solver replay, organizer acceptance, process cleanup 확인
 놓쳤거나 프로토콜을 지원하지 않을 수 있으면, 신호 부재를 대상의 부재로
 단정하지 말고 관찰 창을 넓히거나 바꾸는 것을 다음 action으로 삼습니다.
 
+Timeout은 model 오류의 증명이 아닙니다. 연산을 늘리기 전에 관찰한 동작과
+model을 대조합니다. 제어면 거절은 같은 요청의 재표현보다 원인 수정을
+우선하되, 새 근거나 필요한 resource·authority 정산이 있으면 다음 action을
+바꿀 수 있습니다.
+
 이 단계는 GPT-5.6 Sol의 tool-use 강점을 유지하면서 no-information 반복을
 줄입니다.
 
@@ -233,7 +238,7 @@ Ghidra는 `analyzeHeadless` 또는 pyghidra headless로만 사용합니다.
 ```bash
 git clone https://github.com/GunP4ng/ctf-skill.git
 cd ctf-skill
-git checkout --detach v0.8.0
+git checkout --detach v0.8.1
 ```
 
 사용하는 AI agent가 읽는 skill 경로에 다음 파일을 등록합니다.
@@ -260,7 +265,7 @@ challenge, hidden official-reference boundary, exact model과 thinking level,
 
 ## 버전과 범위
 
-현재 release는 `ctf-skill v0.8.0`입니다.
+현재 release는 `ctf-skill v0.8.1`입니다.
 
 승인된 교육용 CTF에서만 사용하세요. 운영자가 정한 target, account, time,
 submission 범위를 지켜야 합니다.

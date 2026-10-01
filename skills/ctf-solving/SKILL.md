@@ -73,10 +73,11 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   target behavior byte for byte. A mismatch means repair the model, not scale the
   search. Give a solver an explicit abort; absent trusted target evidence, use
   180 seconds. An abort or unknown outcome is evidence about the run, not proof
-  that the target claim is false. When the abort fires, default to the conclusion
-  that the model misencodes the target's semantics and re-derive it from primitive
-  behavior before scaling compute; re-running the same model in more engines or
-  wider budgets is not a pivot.
+  that the target claim is false. When the abort fires, audit the model against
+  observed primitive behavior before scaling compute; the abort alone proves
+  neither a semantic mismatch nor insufficient compute. Re-running the same
+  model in more engines or wider budgets is not new target information; explain
+  the evidence for changing the search cost.
 - Treat every tool output as a bounded view of the target, not the target itself.
   When output is truncated, rendered, filtered, or returned through a channel that
   may not carry the target's protocol or post-processing, record that the view is
@@ -106,9 +107,11 @@ Route from observed artifacts or runtime behavior, not the challenge title:
 - If an action adds no decision-changing fact, retain that outcome and choose a
   materially different observation when one is supported. Renaming a tool,
   prompt, parameter, worker, or representation is not a different result. A
-  control-plane or mediator rejection is not target information: repair it at most
-  once, and after a second same-class rejection the only supported moves are to
-  change technical lane, settle the blocking state, or declare the attempt blocked.
+  control-plane or mediator rejection is not target information. Prefer one
+  concrete repair, then change technical lane or settle the blocking state
+  rather than relabel the same rejected request. Retry only when new evidence
+  changes the rejection's cause; a control failure alone cannot make the whole
+  attempt blocked while another supported action remains.
 
 ## Result
 
@@ -117,18 +120,21 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   the current candidate or lossless candidate set and the next authority edge.
   Local models, emulators, patched binaries, and reconstructed predicates are
   useful evidence but are not organizer acceptance. Do not infer uniqueness
-  without an injectivity or single-preimage proof. Do not state a capability,
-  primitive, or refutation in the first person until you have executed or replayed
-  it yourself and bound the receipt; a child or advisory result is a hypothesis
-  until root-replayed and reads as unverified until then.
+  without an injectivity or single-preimage proof. Separate direct observation,
+  inference, and untested hypothesis; a repeated claim or summary is not new
+  evidence. Attribute child and advisory claims to their exact receipts, and
+  state whether root replay occurred. Do not describe them as personally
+  verified until you have executed or replayed them yourself; an independent
+  acceptance receipt retains its authority without a duplicate submission.
 - Keep exactly one current critical authority edge in view, and make the next
   action a bounded discriminator with explicit positive and negative outcomes
   that directly reduces that edge. After the next retained result, state whether
   capability, candidate, bound, or edge changed; otherwise state that there was
   no new information. Retain the evidence, the excluded branch, and the unblock
-  condition. Once you name that discriminator, executing it is the next action
-  unless a strictly cheaper orthogonal observation reduces the same edge; naming a
-  frontier is not progress.
+  condition. Prefer executing that discriminator next over restating the plan
+  or expanding delegation. Change it when new evidence, a cheaper orthogonal
+  observation, or a required resource or authority settlement changes the
+  supported next action; naming a frontier is not progress.
 - State one truthful result: `solved`, `failed-with-valid-oracle`, `partial`, or
   `no-result`. `solved` requires organizer acceptance and a replayable mechanism
   when feasible (or the exact pinned one-shot invocation and acceptance receipt).
@@ -150,8 +156,10 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   Do not say done, final, or stopped before these state changes are evidenced.
   When the outcome becomes determined - an accepted candidate, a valid-oracle
   failure, or an exhausted plan - run that settlement in order and state the result
-  and termination rather than continuing technical work or re-proposing a rejected
-  terminal; read any returned blockers and clear them in order.
+  and termination rather than continuing unrelated technical work or re-proposing
+  a rejected terminal; read any returned blockers and clear them in order.
+  If new evidence invalidates the outcome, reopen the unresolved edge instead of
+  forcing closure. An exhausted plan alone is not valid-oracle failure.
 - Pair the result with one truthful termination: `completed`, `blocked`,
   `interrupted`, or `budget-stop`. Use `budget-stop` only for a trusted,
   reconciled declaration whose used amount equals its limit and whose remaining
