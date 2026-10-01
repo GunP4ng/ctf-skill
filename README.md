@@ -24,6 +24,7 @@ GPT-5.6 Sol은 CTF에서 강한 도구 사용자입니다. 하지만 도구를 �
 | 수식, 상태 기계, dataflow로 representation을 바꿀 수 있음 | 올바른 관점을 찾으면 문제를 크게 단순화함 |
 | mechanism이나 candidate가 주어지면 replay를 잘함 | 해결 경로가 보인 뒤 검증과 설명이 강함 |
 | 흥미로운 초기 가설이나 decoy에 오래 머무름 | 값비싼 분석이 실제 정답과 멀어질 수 있음 |
+| 도구 출력의 잘림·렌더링·프로토콜 한계를 대상의 부재로 해석함 | 보지 못한 것을 "없다"로 단정해 추론이 틀어짐 |
 | 새 정보가 없는 실험을 이름만 바꿔 반복함 | 시간이 늘어도 frontier가 줄지 않음 |
 | 여러 primitive를 찾고도 하나의 mechanism으로 연결하지 못함 | 부분 성과는 많지만 flag까지 가지 못함 |
 | debugger·host 상태로 얻은 성공을 portable primitive로 봄 | full exploit 뒤 remote에서 무너짐 |
@@ -115,6 +116,10 @@ Finish: completed solver replay, organizer acceptance, process cleanup 확인
 
 도구 이름, prompt, parameter만 바꿨는데 같은 판단이 남는다면 새로운 실험이
 아닙니다. Materially different observation이나 representation으로 바꿉니다.
+
+도구 출력은 대상의 부분 관찰입니다. 출력이 잘리거나 렌더링 전 상태를
+놓쳤거나 프로토콜을 지원하지 않을 수 있으면, 신호 부재를 대상의 부재로
+단정하지 말고 관찰 창을 넓히거나 바꾸는 것을 다음 action으로 삼습니다.
 
 이 단계는 GPT-5.6 Sol의 tool-use 강점을 유지하면서 no-information 반복을
 줄입니다.
@@ -228,7 +233,7 @@ Ghidra는 `analyzeHeadless` 또는 pyghidra headless로만 사용합니다.
 ```bash
 git clone https://github.com/GunP4ng/ctf-skill.git
 cd ctf-skill
-git checkout --detach v0.7.4
+git checkout --detach v0.8.0
 ```
 
 사용하는 AI agent가 읽는 skill 경로에 다음 파일을 등록합니다.
@@ -255,7 +260,7 @@ challenge, hidden official-reference boundary, exact model과 thinking level,
 
 ## 버전과 범위
 
-현재 release는 `ctf-skill v0.7.4`입니다.
+현재 release는 `ctf-skill v0.8.0`입니다.
 
 승인된 교육용 CTF에서만 사용하세요. 운영자가 정한 target, account, time,
 submission 범위를 지켜야 합니다.

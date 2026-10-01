@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-01
+
+### Added
+
+- Added five model-owned reasoning rules to the canonical CTF policy without a
+  fifth checkpoint: treat tool output as a bounded observation channel and never
+  read a missing signal as the target's absence; on a solver abort default to a
+  misencoded constraint model and re-derive before scaling compute; repair a
+  control-plane or mediator rejection at most once before changing lane,
+  settling, or declaring blocked; execute the named discriminator as the next
+  action and run the settlement ladder once the outcome is determined; and
+  withhold first-person capability, primitive, or refutation claims until
+  self-executed or root-replayed.
+
 ## [0.7.4] - 2026-09-01
 
 ### Changed

@@ -73,7 +73,17 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   target behavior byte for byte. A mismatch means repair the model, not scale the
   search. Give a solver an explicit abort; absent trusted target evidence, use
   180 seconds. An abort or unknown outcome is evidence about the run, not proof
-  that the target claim is false.
+  that the target claim is false. When the abort fires, default to the conclusion
+  that the model misencodes the target's semantics and re-derive it from primitive
+  behavior before scaling compute; re-running the same model in more engines or
+  wider budgets is not a pivot.
+- Treat every tool output as a bounded view of the target, not the target itself.
+  When output is truncated, rendered, filtered, or returned through a channel that
+  may not carry the target's protocol or post-processing, record that the view is
+  partial and do not read a missing signal as the target's absence. When a decision
+  turns on what the channel may have dropped, the next action is to widen or switch
+  the observation channel - full capture, the post-render state, the native
+  protocol - before concluding from the gap.
 - For multi-round remote work, observe process or service lifetime on a fresh
   connection before funding the full attempt. Record round-trip cost, timeout
   risk, input-independent pipeline groups, and boundaries that must wait for a
@@ -95,7 +105,10 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   not assume success, failure, cleanup, or permission to execute it again.
 - If an action adds no decision-changing fact, retain that outcome and choose a
   materially different observation when one is supported. Renaming a tool,
-  prompt, parameter, worker, or representation is not a different result.
+  prompt, parameter, worker, or representation is not a different result. A
+  control-plane or mediator rejection is not target information: repair it at most
+  once, and after a second same-class rejection the only supported moves are to
+  change technical lane, settle the blocking state, or declare the attempt blocked.
 
 ## Result
 
@@ -104,13 +117,18 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   the current candidate or lossless candidate set and the next authority edge.
   Local models, emulators, patched binaries, and reconstructed predicates are
   useful evidence but are not organizer acceptance. Do not infer uniqueness
-  without an injectivity or single-preimage proof.
+  without an injectivity or single-preimage proof. Do not state a capability,
+  primitive, or refutation in the first person until you have executed or replayed
+  it yourself and bound the receipt; a child or advisory result is a hypothesis
+  until root-replayed and reads as unverified until then.
 - Keep exactly one current critical authority edge in view, and make the next
   action a bounded discriminator with explicit positive and negative outcomes
   that directly reduces that edge. After the next retained result, state whether
   capability, candidate, bound, or edge changed; otherwise state that there was
   no new information. Retain the evidence, the excluded branch, and the unblock
-  condition.
+  condition. Once you name that discriminator, executing it is the next action
+  unless a strictly cheaper orthogonal observation reduces the same edge; naming a
+  frontier is not progress.
 - State one truthful result: `solved`, `failed-with-valid-oracle`, `partial`, or
   `no-result`. `solved` requires organizer acceptance and a replayable mechanism
   when feasible (or the exact pinned one-shot invocation and acceptance receipt).
@@ -130,6 +148,10 @@ Route from observed artifacts or runtime behavior, not the challenge title:
   processes, containers, credentials, and temporary artifacts, and retain a
   cleanup receipt. Unknown mutation outcomes remain open work, not cleanup.
   Do not say done, final, or stopped before these state changes are evidenced.
+  When the outcome becomes determined - an accepted candidate, a valid-oracle
+  failure, or an exhausted plan - run that settlement in order and state the result
+  and termination rather than continuing technical work or re-proposing a rejected
+  terminal; read any returned blockers and clear them in order.
 - Pair the result with one truthful termination: `completed`, `blocked`,
   `interrupted`, or `budget-stop`. Use `budget-stop` only for a trusted,
   reconciled declaration whose used amount equals its limit and whose remaining
